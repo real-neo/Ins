@@ -73,7 +73,7 @@ self.addEventListener('fetch', function(e) {
      * network" strategy:
      * https://jakearchibald.com/2014/offline-cookbook/#cache-then-network
      */
-      e.respondWith(
+
      return fetch(e.request).then(function(response){
           return response;
         }).catch(e)(function (e) {
