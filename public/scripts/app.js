@@ -119,7 +119,7 @@ function loadCityData(city, date){
         },
         error: function (xhr, status, error) {
             showOfflineWarning();
-            getCachedData(city, date);
+            addToResults(getCachedData(city, date));
         }
     });
 
