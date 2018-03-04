@@ -74,13 +74,11 @@ self.addEventListener('fetch', function(e) {
      */
 
      return fetch(e.request).then(function(response){
+         // if (!response.ok) {
+         //     throw Error(response.statusText);
+         //     }
           return response;
-        }).catch(e)(function (e) {
-                       //you might want to do more error checking here too,
-                       //eg, check what e is returning..
-                       console.log('You appear to be offline, please try again when back online');
-                       return JSON.stringify({});
-                    });
+        })
   } else {
     /*
      * The app is asking for app shell files. In this scenario the app uses the
@@ -89,7 +87,7 @@ self.addEventListener('fetch', function(e) {
      */
     e.respondWith(
       caches.match(e.request).then(function(response) {
-        return response || fetch(e.request).catch(err)(function (e) {
+        return response || fetch(e.request).catch(function (e) {
             console.log("error: " + err);
         })
         })
