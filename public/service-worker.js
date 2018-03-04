@@ -73,12 +73,14 @@ self.addEventListener('fetch', function(e) {
      * network" strategy:
      * https://jakearchibald.com/2014/offline-cookbook/#cache-then-network
      */
-    fetch(e.request).then(function(response){
+      e.respondWith(
+     return fetch(e.request).then(function(response){
           return response;
         }).catch(e)(function (e) {
                        //you might want to do more error checking here too,
                        //eg, check what e is returning..
-                       alert('You appear to be offline, please try again when back online');
+                       console.log('You appear to be offline, please try again when back online');
+                       return JSON.stringify({});
                     });
   } else {
     /*
@@ -88,8 +90,10 @@ self.addEventListener('fetch', function(e) {
      */
     e.respondWith(
       caches.match(e.request).then(function(response) {
-        return response || fetch(e.request);
-      })
+        return response || fetch(e.request).catch(err)(function (e) {
+            console.log("error: " + err);
+        })
+        })
     );
   }
 });
