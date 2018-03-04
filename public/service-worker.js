@@ -64,7 +64,7 @@ self.addEventListener('activate', function(e) {
 
 self.addEventListener('fetch', function(e) {
   console.log('[Service Worker] Fetch', e.request.url);
-  var dataUrl = 'https://query.yahooapis.com/v1/public/yql';
+  var dataUrl = '/weather_data';
   if (e.request.url.indexOf(dataUrl) > -1) {
     /*
      * When the request URL contains dataUrl, the app is asking for fresh
@@ -74,13 +74,13 @@ self.addEventListener('fetch', function(e) {
      * https://jakearchibald.com/2014/offline-cookbook/#cache-then-network
      */
     e.respondWith(
-      caches.open(dataCacheName).then(function(cache) {
-        return fetch(e.request).then(function(response){
-          cache.put(e.request.url, response.clone());
+      return fetch(e.request).then(function(response){
           return response;
-        });
-      })
-    );
+        }).catch(e)(function (e) {
+                       //you might want to do more error checking here too,
+                       //eg, check what e is returning..
+                       alert('You appear to be offline, please try again when back online');
+                    });
   } else {
     /*
      * The app is asking for app shell files. In this scenario the app uses the
