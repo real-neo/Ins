@@ -74,9 +74,8 @@ self.addEventListener('fetch', function(e) {
      */
 
      return fetch(e.request).then(function(response){
-         // if (!response.ok) {
-         //     throw Error(response.statusText);
-         //     }
+         // note: it the network is down, response will contain the error
+         // that will be passed to Ajax
           return response;
         })
   } else {
@@ -87,9 +86,19 @@ self.addEventListener('fetch', function(e) {
      */
     e.respondWith(
       caches.match(e.request).then(function(response) {
-        return response || fetch(e.request).catch(function (e) {
-            console.log("error: " + err);
-        })
+        return response
+            || fetch(e.request)
+                .then(function(response) {
+                    // note if network error happens, fetch does not return
+                    // an error. it just returns response not ok
+                    // https://www.tjvantoll.com/2015/09/13/fetch-and-errors/
+                    if (!response.ok) {
+                        console.log("error: " + err);
+                    }
+                })
+                .catch(function (e) {
+                    console.log("error: " + err);
+                })
         })
     );
   }
