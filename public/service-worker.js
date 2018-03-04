@@ -16,7 +16,7 @@ var dataCacheName = 'weatherData-v1';
 var cacheName = 'weatherPWA-step-8-1';
 var filesToCache = [
   '/',
-  '/index.html',
+  '/index',
   '/scripts/app.js',
   '/styles/inline.css',
  'styles/bootstrap.min.css',
@@ -73,8 +73,7 @@ self.addEventListener('fetch', function(e) {
      * network" strategy:
      * https://jakearchibald.com/2014/offline-cookbook/#cache-then-network
      */
-    e.respondWith(
-      return fetch(e.request).then(function(response){
+    fetch(e.request).then(function(response){
           return response;
         }).catch(e)(function (e) {
                        //you might want to do more error checking here too,
