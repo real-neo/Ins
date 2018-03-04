@@ -30,7 +30,7 @@ function getForecast(forecast) {
 function getPrecipitations(dataR) {
     if (dataR.precipitations == null && dataR.precipitations === undefined)
            return "unavailable";
-    dataR.precipitations
+    return dataR.precipitations
 }
 
 /**
@@ -43,7 +43,7 @@ function addToResults(dataR) {
         document.getElementById('results').appendChild(row);
         row.classList.add('card');
         row.classList.add('my_card');
-        row.classList.add('bg-faded')
+        row.classList.add('bg-faded');
         //this.temperature= temperature;
         row.innerHTML = "<div class='card-block'>" +
             "<div class='row'>" +
@@ -116,10 +116,15 @@ function loadCityData(city, date){
             // object for us before returning it
             addToResults(dataR);
             storeCachedData(dataR.location, dataR);
+            if (document.getElementById('offline_div')!=null)
+                    document.getElementById('offline_div').style.display='none';
         },
         error: function (xhr, status, error) {
             showOfflineWarning();
             addToResults(getCachedData(city, date));
+            const dvv= document.getElementById('offline_div');
+            if (dvv!=null)
+                    dvv.style.display='block';
         }
     });
 
@@ -149,12 +154,12 @@ window.addEventListener('offline', function(e) {
 
 function showOfflineWarning(){
     if (document.getElementById('offline_div')!=null)
-        document.getElementById('offline_div').style.display.block;
+        document.getElementById('offline_div').style.display='block';
 }
 
 function hideOfflineWarning(){
     if (document.getElementById('offline_div')!=null)
-        document.getElementById('offline_div').style.display.hide;
+        document.getElementById('offline_div').style.display='none';
 }
 
 
