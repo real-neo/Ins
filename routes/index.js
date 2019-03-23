@@ -47,6 +47,12 @@ class WeatherForecast{
   }
 }
 
+/**
+ * given a city and a date, it generates random values for the forecast
+ * @param location
+ * @param date
+ * @returns {WeatherForecast}
+ */
 function getWeatherForecast(location, date) {
     return new WeatherForecast(
         location,

@@ -162,7 +162,7 @@
       </item>
     </group>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_12" default="true" project-jdk-name="12" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />

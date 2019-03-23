@@ -6,7 +6,6 @@
 
 var app = require('../app');
 var debug = require('debug')('progressiveapp:server');
-// var http = require('http');
 var https = require('https');
 var fs = require('fs-extra');
 
@@ -14,7 +13,7 @@ var fs = require('fs-extra');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3001');
+var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
@@ -29,8 +28,6 @@ var options = {
  * Create HTTPs server using the options
  */
 var server = https.createServer(options, app);
-// var server = http.createServer(app);
-
 
 /**
  * Listen on provided port, on all network interfaces.
