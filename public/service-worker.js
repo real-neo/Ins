@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var dataCacheName = 'weatherData-v1';
-var cacheName = 'weatherPWA-step-8-1';
-var filesToCache = [
+const dataCacheName = 'insData-v1';
+const cacheName = 'insPWA-v1';
+const filesToCache = [
     '/',
     '/scripts/app.js',
-    '/styles/inline.css',
-    '/styles/bootstrap.min.css',
     '/scripts/bootstrap.min.js',
+    '/scripts/database.js',
     '/scripts/idb.js',
     '/scripts/jquery.min.js',
-    '/scripts/database.js',
+    '/styles/bootstrap.min.css',
+    '/styles/inline.css',
     '/fonts/glyphicons-halflings-regular.woff2',
     '/fonts/glyphicons-halflings-regular.woff',
     '/fonts/glyphicons-halflings-regular.ttf',
@@ -83,7 +83,7 @@ self.addEventListener('activate', function (e) {
  */
 self.addEventListener('fetch', function (event) {
     console.log('[Service Worker] Fetch', event.request.url);
-    var dataUrl = '/weather_data';
+    const dataUrl = '/weather_data';
     //if the request is '/weather_data', post to the server
     if (event.request.url.indexOf(dataUrl) > -1) {
         /*
@@ -97,13 +97,13 @@ self.addEventListener('fetch', function (event) {
             // note: it the network is down, response will contain the error
             // that will be passed to Ajax
             return response;
-        }).catch (function(e){
+        }).catch(function (e) {
             console.log("service worker error 1: " + e.message);
         })
     } else {
         /*
          * The app is asking for app shell files. In this scenario the app uses the
-         * "Cache, then if netowrk available, it will refresh the cache
+         * "Cache, then if network available, it will refresh the cache
          * see stale-while-revalidate at
          * https://jakearchibald.com/2014/offline-cookbook/#on-activate
          */

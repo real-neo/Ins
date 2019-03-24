@@ -17,15 +17,14 @@ function initWeatherForecasts() {
             .then(function () {
                 console.log('Service Worker Registered');
             })
-            .catch (function (error){
-                console.log('Service Worker NOT Registered '+ error.message);
+            .catch(function (error) {
+                console.log('Service Worker NOT Registered ' + error.message);
             });
     }
     //check for support
     if ('indexedDB' in window) {
         initDatabase();
-    }
-    else {
+    } else {
         console.log('This browser doesn\'t support IndexedDB');
     }
 }
@@ -34,9 +33,9 @@ function initWeatherForecasts() {
  * given the list of cities created by the user, it will retrieve all the data from
  * the server (or failing that) from the database
  */
-function loadData(){
-    var cityList=JSON.parse(localStorage.getItem('cities'));
-    cityList=removeDuplicates(cityList);
+function loadData() {
+    let cityList = JSON.parse(localStorage.getItem('cities'));
+    cityList = removeDuplicates(cityList);
     retrieveAllCitiesData(cityList, new Date().getTime());
 }
 
@@ -46,7 +45,7 @@ function loadData(){
  * @param cityList the list of the cities the user has requested
  * @param date the date for the forecasts (not in use)
  */
-function retrieveAllCitiesData(cityList, date){
+function retrieveAllCitiesData(cityList, date) {
     refreshCityList();
     for (index in cityList)
         loadCityData(cityList[index], date);
@@ -59,7 +58,7 @@ function retrieveAllCitiesData(cityList, date){
  * @param city
  * @param date
  */
-function loadCityData(city, date){
+function loadCityData(city, date) {
     const input = JSON.stringify({location: city, date: date});
     $.ajax({
         url: '/weather_data',
@@ -72,20 +71,20 @@ function loadCityData(city, date){
             // object for us before returning it
             addToResults(dataR);
             storeCachedData(dataR.location, dataR);
-            if (document.getElementById('offline_div')!=null)
-                    document.getElementById('offline_div').style.display='none';
+            if (document.getElementById('offline_div') != null)
+                document.getElementById('offline_div').style.display = 'none';
         },
         // the request to the server has failed. Let's show the cached data
         error: function (xhr, status, error) {
             showOfflineWarning();
             getCachedData(city, date);
-            const dvv= document.getElementById('offline_div');
-            if (dvv!=null)
-                    dvv.style.display='block';
+            const dvv = document.getElementById('offline_div');
+            if (dvv != null)
+                dvv.style.display = 'block';
         }
     });
     // hide the list of cities if currently shown
-    if (document.getElementById('city_list')!=null)
+    if (document.getElementById('city_list') != null)
         document.getElementById('city_list').style.display = 'none';
 }
 
@@ -98,15 +97,15 @@ function loadCityData(city, date){
  * it adds a row of weather forecasts to the results div
  * @param dataR the data returned by the server:
  * class WeatherForecast{
-  *  constructor (location, date, forecast, temperature, wind, precipitations) {
-  *    this.location= location;
-  *    this.date= date,
-  *    this.forecast=forecast;
-  *    this.temperature= temperature;
-  *    this.wind= wind;
-  *    this.precipitations= precipitations;
-  *  }
-  *}
+ *  constructor (location, date, forecast, temperature, wind, precipitations) {
+ *    this.location= location;
+ *    this.date= date,
+ *    this.forecast=forecast;
+ *    this.temperature= temperature;
+ *    this.wind= wind;
+ *    this.precipitations= precipitations;
+ *  }
+ *}
  */
 function addToResults(dataR) {
     if (document.getElementById('results') != null) {
@@ -134,9 +133,9 @@ function addToResults(dataR) {
 /**
  * it removes all forecasts from the result div
  */
-function refreshCityList(){
-    if (document.getElementById('results')!=null)
-        document.getElementById('results').innerHTML='';
+function refreshCityList() {
+    if (document.getElementById('results') != null)
+        document.getElementById('results').innerHTML = '';
 }
 
 
@@ -147,8 +146,8 @@ function refreshCityList(){
  * @param date
  */
 function selectCity(city, date) {
-    var cityList=JSON.parse(localStorage.getItem('cities'));
-    if (cityList==null) cityList=[];
+    let cityList = JSON.parse(localStorage.getItem('cities'));
+    if (cityList == null) cityList = [];
     cityList.push(city);
     cityList = removeDuplicates(cityList);
     localStorage.setItem('cities', JSON.stringify(cityList));
@@ -156,12 +155,11 @@ function selectCity(city, date) {
 }
 
 
-
 /**
  * When the client gets off-line, it shows an off line warning to the user
  * so that it is clear that the data is stale
  */
-window.addEventListener('offline', function(e) {
+window.addEventListener('offline', function (e) {
     // Queue up events for server.
     console.log("You are offline");
     showOfflineWarning();
@@ -170,7 +168,7 @@ window.addEventListener('offline', function(e) {
 /**
  * When the client gets online, it hides the off line warning
  */
-window.addEventListener('online', function(e) {
+window.addEventListener('online', function (e) {
     // Resync data with server.
     console.log("You are online");
     hideOfflineWarning();
@@ -178,14 +176,14 @@ window.addEventListener('online', function(e) {
 }, false);
 
 
-function showOfflineWarning(){
-    if (document.getElementById('offline_div')!=null)
-        document.getElementById('offline_div').style.display='block';
+function showOfflineWarning() {
+    if (document.getElementById('offline_div') != null)
+        document.getElementById('offline_div').style.display = 'block';
 }
 
-function hideOfflineWarning(){
-    if (document.getElementById('offline_div')!=null)
-        document.getElementById('offline_div').style.display='none';
+function hideOfflineWarning() {
+    if (document.getElementById('offline_div') != null)
+        document.getElementById('offline_div').style.display = 'none';
 }
 
 
@@ -193,10 +191,9 @@ function hideOfflineWarning(){
  * it shows the city list in the browser
  */
 function showCityList() {
-    if (document.getElementById('city_list')!=null)
+    if (document.getElementById('city_list') != null)
         document.getElementById('city_list').style.display = 'block';
 }
-
 
 
 /**
@@ -206,9 +203,9 @@ function showCityList() {
  */
 function removeDuplicates(cityList) {
     // remove any duplicate
-       var uniqueNames=[];
-       $.each(cityList, function(i, el){
-           if($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
-       });
-       return uniqueNames;
+    const uniqueNames = [];
+    $.each(cityList, function (i, el) {
+        if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+    });
+    return uniqueNames;
 }

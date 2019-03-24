@@ -13,40 +13,40 @@
  */
 var dbPromise;
 
-const FORECAST_DB_NAME= 'db_forecasts_1';
-const FORECAST_STORE_NAME= 'store_forecasts';
+const FORECAST_DB_NAME = 'db_forecasts_1';
+const FORECAST_STORE_NAME = 'store_forecasts';
 
 /**
  * it inits the database
  */
-function initDatabase(){
+function initDatabase() {
     dbPromise = idb.openDb(FORECAST_DB_NAME, 1, function (upgradeDb) {
         if (!upgradeDb.objectStoreNames.contains(FORECAST_STORE_NAME)) {
-            var forecastDB = upgradeDb.createObjectStore(FORECAST_STORE_NAME, {keyPath: 'id', autoIncrement: true});
+            const forecastDB = upgradeDb.createObjectStore(FORECAST_STORE_NAME, {keyPath: 'id', autoIncrement: true});
             forecastDB.createIndex('location', 'location', {unique: false, multiEntry: true});
         }
     });
 }
+
 /**
  * it saves the forecasts for a city in localStorage
  * @param city
  * @param forecastObject
  */
 function storeCachedData(city, forecastObject) {
-    console.log('inserting: '+JSON.stringify(forecastObject));
+    console.log('inserting: ' + JSON.stringify(forecastObject));
     if (dbPromise) {
         dbPromise.then(async db => {
-            var tx = db.transaction(FORECAST_STORE_NAME, 'readwrite');
-            var store = tx.objectStore(FORECAST_STORE_NAME);
+            const tx = db.transaction(FORECAST_STORE_NAME, 'readwrite');
+            const store = tx.objectStore(FORECAST_STORE_NAME);
             await store.put(forecastObject);
             return tx.complete;
         }).then(function () {
-            console.log('added item to the store! '+ JSON.stringify(forecastObject));
+            console.log('added item to the store! ' + JSON.stringify(forecastObject));
         }).catch(function (error) {
             localStorage.setItem(city, JSON.stringify(forecastObject));
         });
-    }
-    else localStorage.setItem(city, JSON.stringify(forecastObject));
+    } else localStorage.setItem(city, JSON.stringify(forecastObject));
 }
 
 
@@ -59,17 +59,17 @@ function storeCachedData(city, forecastObject) {
 function getCachedData(city, date) {
     if (dbPromise) {
         dbPromise.then(function (db) {
-            console.log('fetching: '+city);
-            var tx = db.transaction(FORECAST_STORE_NAME, 'readonly');
-            var store = tx.objectStore(FORECAST_STORE_NAME);
-            var index = store.index('location');
+            console.log('fetching: ' + city);
+            const tx = db.transaction(FORECAST_STORE_NAME, 'readonly');
+            const store = tx.objectStore(FORECAST_STORE_NAME);
+            const index = store.index('location');
             return index.getAll(IDBKeyRange.only(city));
         }).then(function (readingsList) {
-            if (readingsList && readingsList.length>0){
-                var max;
-                for (var elem of readingsList)
-                    if (!max || elem.date>max.date)
-                        max= elem;
+            if (readingsList && readingsList.length > 0) {
+                let max;
+                for (const elem of readingsList)
+                    if (!max || elem.date > max.date)
+                        max = elem;
                 if (max) addToResults(max);
             } else {
                 const value = localStorage.getItem(city);
@@ -81,7 +81,7 @@ function getCachedData(city, date) {
     } else {
         const value = localStorage.getItem(city);
         if (value == null)
-            addToResults( {city: city, date: date});
+            addToResults({city: city, date: date});
         else addToResults(value);
     }
 }
