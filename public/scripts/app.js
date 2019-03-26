@@ -9,7 +9,7 @@ const SNOWY = 4;
  * called by the HTML onload
  * showing any cached forecast data and declaring the service worker
  */
-function initWeatherForecasts() {
+function initIns() {
     loadData();
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker

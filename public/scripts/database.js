@@ -11,18 +11,18 @@
  *  }
  *}
  */
-var dbPromise;
+let dbPromise;
 
-const FORECAST_DB_NAME = 'db_forecasts_1';
-const FORECAST_STORE_NAME = 'store_forecasts';
+const INS_DB_NAME = 'ins_db_1';
+const INS_STORE_NAME = 'ins_store';
 
 /**
  * it inits the database
  */
 function initDatabase() {
-    dbPromise = idb.openDb(FORECAST_DB_NAME, 1, function (upgradeDb) {
-        if (!upgradeDb.objectStoreNames.contains(FORECAST_STORE_NAME)) {
-            const forecastDB = upgradeDb.createObjectStore(FORECAST_STORE_NAME, {keyPath: 'id', autoIncrement: true});
+    dbPromise = idb.openDb(INS_DB_NAME, 1, function (upgradeDb) {
+        if (!upgradeDb.objectStoreNames.contains(INS_STORE_NAME)) {
+            const forecastDB = upgradeDb.createObjectStore(INS_STORE_NAME, {keyPath: 'id', autoIncrement: true});
             forecastDB.createIndex('location', 'location', {unique: false, multiEntry: true});
         }
     });
@@ -37,8 +37,8 @@ function storeCachedData(city, forecastObject) {
     console.log('inserting: ' + JSON.stringify(forecastObject));
     if (dbPromise) {
         dbPromise.then(async db => {
-            const tx = db.transaction(FORECAST_STORE_NAME, 'readwrite');
-            const store = tx.objectStore(FORECAST_STORE_NAME);
+            const tx = db.transaction(INS_STORE_NAME, 'readwrite');
+            const store = tx.objectStore(INS_STORE_NAME);
             await store.put(forecastObject);
             return tx.complete;
         }).then(function () {
@@ -60,8 +60,8 @@ function getCachedData(city, date) {
     if (dbPromise) {
         dbPromise.then(function (db) {
             console.log('fetching: ' + city);
-            const tx = db.transaction(FORECAST_STORE_NAME, 'readonly');
-            const store = tx.objectStore(FORECAST_STORE_NAME);
+            const tx = db.transaction(INS_STORE_NAME, 'readonly');
+            const store = tx.objectStore(INS_STORE_NAME);
             const index = store.index('location');
             return index.getAll(IDBKeyRange.only(city));
         }).then(function (readingsList) {
