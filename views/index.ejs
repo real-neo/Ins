@@ -1,19 +1,3 @@
-<!--
- Copyright 2016 Google Inc.
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
--->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,46 +16,54 @@
     <meta name="msapplication-TileColor" content="#2F3BA2">
 
     <link rel="stylesheet" href="/styles/bootstrap.min.css">
-    <link rel="stylesheet" href="/styles/inline.css">
+    <!--<link rel="stylesheet" href="/styles/inline.css">-->
+    <link rel="stylesheet" href="/styles/all.css">
     <script src="/scripts/jquery.min.js"></script>
     <script src="/scripts/app.js"></script>
-    <script src="/scripts/bootstrap.min.js"></script>
+    <script src="/scripts/bootstrap.bundle.min.js"></script>
     <script src="/scripts/database.js"></script>
     <script src="/scripts/idb.js"></script>
 </head>
 <body onload="initIns()">
-<div class="container" style="width: 100%">
-    <div class="row">
-        <div class="col-xs-10"><h1><%= title %></h1></div>
-        <div class="col-xs-2">
-            <div class="form-group">
-                <h1>
-                    <button class="btn btn-primary btn-lg buttonField roundishShape " id="swap_button"
-                            onclick="loadData()">
-                        <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-                    </button>
-                    <button class="btn btn-primary btn-lg buttonField roundishShape " id="swap_button"
-                            onclick="showCityList()">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                    </button>
-                </h1>
-                <div class="list-group pop_up_list" id='city_list' style="display:none">
-                    <button class="list-group-item" onclick="selectCity('London', new Date().getTime());">London
-                    </button>
-                    <button class="list-group-item" onclick="selectCity('Madrid', new Date().getTime());">Madrid
-                    </button>
-                    <button class="list-group-item" onclick="selectCity('Paris', new Date().getTime());">Paris</button>
-                    <button class="list-group-item" onclick="selectCity('Rome', new Date().getTime());">Rome</button>
-                </div>
+<nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="/"><%= title %></a>
 
+    <div class="collapse navbar-collapse" id="navbarsExample02">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col" style="text-align:right">
+            <button class="btn btn-primary btn-lg" onclick="loadData()">
+                <i class="fas fa-redo"></i>
+            </button>
+            <button class="btn btn-primary btn-lg dropdown-toggle" id="add_city" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-plus"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="add_city">
+                <a class="dropdown-item" href="javascript:selectCity('London', new Date().getTime());">London</a>
+                <a class="dropdown-item" href="javascript:selectCity('Madrid', new Date().getTime());">Madrid</a>
+                <a class="dropdown-item" href="javascript:selectCity('Paris', new Date().getTime());">Paris</a>
+                <a class="dropdown-item" href="javascript:selectCity('Rome', new Date().getTime());">Rome</a>
             </div>
         </div>
     </div>
     <div class="offline_div" id="offline_div" style="display: none">You are offline</div>
+
+    <div id="results" style="text-align:center">
+    </div>
 </div>
 
-<div id="results" style="text-align: center">
-</div>
 
 </body>
 </html>

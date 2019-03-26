@@ -109,23 +109,25 @@ function loadCityData(city, date) {
  */
 function addToResults(dataR) {
     if (document.getElementById('results') != null) {
-        const row = document.createElement('div');
-        // appending a new row
-        document.getElementById('results').appendChild(row);
-        // formatting the row by applying css classes
-        row.classList.add('card');
-        row.classList.add('my_card');
-        row.classList.add('bg-faded');
+        const card = document.createElement('div');
+        // appending a new card
+        document.getElementById('results').appendChild(card);
+        // formatting the card by applying css classes
+        card.classList.add('card');
+
+        const card_body = document.createElement('div');
+        card.appendChild(card_body);
+        card_body.classList.add('card-body');
+
         // the following is far from ideal. we should really create divs using javascript
         // rather than assigning innerHTML
-        row.innerHTML = "<div class='card-block'>" +
-            "<div class='row'>" +
-            "<div class='col-xs-2'><h4 class='card-title'>" + dataR.location + "</h4></div>" +
-            "<div class='col-xs-2'>" + getForecast(dataR.forecast) + "</div>" +
-            "<div class='col-xs-2'>" + getTemperature(dataR) + "</div>" +
-            "<div class='col-xs-2'>" + getPrecipitations(dataR) + "</div>" +
-            "<div class='col-xs-2'>" + getWind(dataR) + "</div>" +
-            "<div class='col-xs-2'></div></div></div>";
+        card_body.innerHTML ="<div class='row'>" +
+            "<div class='col-sm'><h4 class='card-title'>" + dataR.location + "</h4></div>" +
+            "<div class='col-sm'>" + getForecast(dataR.forecast) + "</div>" +
+            "<div class='col-sm'>" + getTemperature(dataR) + "</div>" +
+            "<div class='col-sm'>" + getPrecipitations(dataR) + "</div>" +
+            "<div class='col-sm'>" + getWind(dataR) + "</div>" +
+            "</div>";
     }
 }
 
