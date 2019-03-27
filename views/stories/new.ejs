@@ -46,13 +46,17 @@
         <label for="videoSource">Video source: </label><select id="videoSource"></select>
     </div>
 
-    <video muted autoplay></video>
+    <!--TODO Need to find a good alternative-->
+    <div class="embed-responsive embed-responsive-1by1">
+        <video muted autoplay class="embed-responsive-item"></video>
+    </div>
 
     <button class="btn btn-primary btn-lg" onclick="snapshot()">
         <i class="fas fa-camera"></i>
     </button>
 
-    <img src="" alt="">
+    <!--TODO Need to find responsive tag/class-->
+    <img src="" alt="" width="100%">
 
     <canvas style="display: none"></canvas>
 
