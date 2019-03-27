@@ -56,9 +56,10 @@ function handleError(error) {
 
 function snapshot() {
     if (window.stream) {
+        canvas.height = videoElement.videoHeight;
+        canvas.width = videoElement.videoWidth;
         let context = canvas.getContext('2d');
-        // context.fillRect(0,0, 640, 480);
-        context.drawImage(videoElement, 0, 0, 640, 480);
+        context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
         document.querySelector('img').src = canvas.toDataURL('image/png');
 
     }
