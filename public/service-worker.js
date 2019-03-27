@@ -19,6 +19,7 @@ const filesToCache = [
     '/scripts/app.js',
     '/scripts/bootstrap.bundle.min.js',
     '/scripts/bootstrap.bundle.min.js.map',
+    '/scripts/camera.js',
     '/scripts/database.js',
     '/scripts/idb.js',
     '/scripts/jquery.min.js',
