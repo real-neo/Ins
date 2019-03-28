@@ -3,7 +3,8 @@ const router = express.Router();
 
 const story = require('../controllers/stories');
 
-/* GET users listing. */
+router.get('/', story.index);
+
 router.get('/new', story.new);
 
 module.exports = router;

@@ -1,5 +1,5 @@
-<%- include('./layout/head'); %>
-<body onload="initIns()">
+<%- include('../layout/head'); %>
+<body>
 <nav class="navbar navbar-expand navbar-light bg-light">
     <a class="navbar-brand" href="/"><%= title %></a>
 
@@ -24,16 +24,6 @@
             <button class="btn btn-primary btn-lg" onclick="loadData()">
                 <i class="fas fa-redo"></i>
             </button>
-            <button class="btn btn-primary btn-lg dropdown-toggle" id="add_city" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-plus"></i>
-            </button>
-            <div class="dropdown-menu" aria-labelledby="add_city">
-                <a class="dropdown-item" href="javascript:selectCity('London', new Date().getTime());">London</a>
-                <a class="dropdown-item" href="javascript:selectCity('Madrid', new Date().getTime());">Madrid</a>
-                <a class="dropdown-item" href="javascript:selectCity('Paris', new Date().getTime());">Paris</a>
-                <a class="dropdown-item" href="javascript:selectCity('Rome', new Date().getTime());">Rome</a>
-            </div>
         </div>
     </div>
     <div class="offline_div" id="offline_div" style="display: none">You are offline</div>
