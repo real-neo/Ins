@@ -1,16 +1,3 @@
-////////////////// DATABASE //////////////////
-// the database receives from the server the following structure
-/** class WeatherForecast{
- *  constructor (location, date, forecast, temperature, wind, precipitations) {
- *    this.location= location;
- *    this.date= date,
- *    this.forecast=forecast;
- *    this.temperature= temperature;
- *    this.wind= wind;
- *    this.precipitations= precipitations;
- *  }
- *}
- */
 let dbPromise;
 
 const INS_DB_NAME = 'ins_db_1';
@@ -22,124 +9,98 @@ const INS_STORE_NAME = 'ins_store';
 function initDatabase() {
     dbPromise = idb.openDb(INS_DB_NAME, 1, function (upgradeDb) {
         if (!upgradeDb.objectStoreNames.contains(INS_STORE_NAME)) {
-            const forecastDB = upgradeDb.createObjectStore(INS_STORE_NAME, {keyPath: 'id', autoIncrement: true});
-            forecastDB.createIndex('location', 'location', {unique: false, multiEntry: true});
+            const storyDB = upgradeDb.createObjectStore(INS_STORE_NAME, {keyPath: 'id', autoIncrement: true});
+            storyDB.createIndex('user_id', 'user_id', {unique: true});
         }
     });
 }
 
 /**
- * it saves the forecasts for a city in localStorage
- * @param city
- * @param forecastObject
+ * it saves the stories for a user in database or localStorage
+ * @param user_id
+ * @param stories
  */
-function storeCachedData(city, forecastObject) {
-    console.log('inserting: ' + JSON.stringify(forecastObject));
+function storeCachedData(user_id, stories) {
+    console.log('inserting: ' + JSON.stringify(stories));
     if (dbPromise) {
         dbPromise.then(async db => {
             const tx = db.transaction(INS_STORE_NAME, 'readwrite');
-            const store = tx.objectStore(INS_STORE_NAME);
-            await store.put(forecastObject);
+            const storyDB = tx.objectStore(INS_STORE_NAME);
+            for (let story of stories)
+                await storyDB.put(story);
             return tx.complete;
         }).then(function () {
-            console.log('added item to the store! ' + JSON.stringify(forecastObject));
+            console.log('added item to the store! ' + JSON.stringify(stories));
         }).catch(function (error) {
-            localStorage.setItem(city, JSON.stringify(forecastObject));
+            console.log('error: ' + error);
+            localStorage.setItem(user_id, JSON.stringify(stories));
         });
-    } else localStorage.setItem(city, JSON.stringify(forecastObject));
+    } else localStorage.setItem(user_id, JSON.stringify(stories));
 }
 
-
 /**
- * it retrieves the forecasts data for a city from the database
- * @param city
- * @param date
- * @returns {*}
+ * it retrieves the stories for a user from database
+ * @param user_id
  */
-function getCachedData(city, date) {
+function getCachedData(user_id) {
     if (dbPromise) {
         dbPromise.then(function (db) {
-            console.log('fetching: ' + city);
+            console.log('fetching: ' + user_id);
             const tx = db.transaction(INS_STORE_NAME, 'readonly');
             const store = tx.objectStore(INS_STORE_NAME);
-            const index = store.index('location');
-            return index.getAll(IDBKeyRange.only(city));
-        }).then(function (readingsList) {
-            if (readingsList && readingsList.length > 0) {
-                let max;
-                for (const elem of readingsList)
-                    if (!max || elem.date > max.date)
-                        max = elem;
-                if (max) addToResults(max);
+            const index = store.index('user_id');
+            return index.getAll(IDBKeyRange.only(user_id));
+        }).then(function (stories) {
+            if (stories && stories.length > 0) {
+                for (let story of stories)
+                    showStory(story);
             } else {
-                const value = localStorage.getItem(city);
-                if (value == null)
-                    addToResults({city: city, date: date});
-                else addToResults(value);
+                getCachedDataFromLocalStorage(user_id);
             }
         });
     } else {
-        const value = localStorage.getItem(city);
-        if (value == null)
-            addToResults({city: city, date: date});
-        else addToResults(value);
+        getCachedDataFromLocalStorage(user_id);
     }
 }
 
-
 /**
- * given the server data, it returns the value of the field precipitations
- * @param dataR the data returned by the server
- * @returns {*}
+ * it retrieves the stories for a user from localStorage
+ * @param user_id
  */
-function getPrecipitations(dataR) {
-    if (dataR.precipitations == null && dataR.precipitations === undefined)
-        return "unavailable";
-    return dataR.precipitations
-}
-
-/**
- * given the server data, it returns the value of the field wind
- * @param dataR the data returned by the server
- * @returns {*}
- */
-function getWind(dataR) {
-    if (dataR.wind == null && dataR.wind === undefined)
-        return "unavailable";
-    else return dataR.wind;
-}
-
-/**
- * given the server data, it returns the value of the field temperature
- * @param dataR the data returned by the server
- * @returns {*}
- */
-function getTemperature(dataR) {
-    if (dataR.temperature == null && dataR.temperature === undefined)
-        return "unavailable";
-    else return dataR.temperature;
-}
-
-
-/**
- * the server returns the forecast as a n integer. Here we find out the
- * string so to display it to the user
- * @param forecast
- * @returns {string}
- */
-function getForecast(forecast) {
-    if (forecast == null && forecast === undefined)
-        return "unavailable";
-    switch (forecast) {
-        case CLOUDY:
-            return 'Cloudy';
-        case CLEAR:
-            return 'Clear';
-        case RAINY:
-            return 'Rainy';
-        case OVERCAST:
-            return 'Overcast';
-        case SNOWY:
-            return 'Snowy';
+function getCachedDataFromLocalStorage(user_id) {
+    const stories = localStorage.getItem(user_id);
+    if (stories == null)
+        showStory({user_id: 'Ins', text: 'You don\'t have any stories!'});
+    else {
+        for (let story of stories)
+            showStory(story);
     }
+}
+
+function getDate(dataR) {
+    if (dataR.date == null && dataR.date === undefined)
+        return 'Unknown time';
+    else
+        return dataR.date;
+}
+
+function getText(dataR) {
+    if (dataR.text == null && dataR.text === undefined)
+        return '(No content)';
+    else
+        return dataR.text;
+}
+
+function getPictures(dataR) {
+    if (dataR.pictures == null && dataR.pictures === undefined)
+        return null; //TODO Check pictures before show them
+    else
+        return dataR.pictures;
+}
+
+function getLocation(dataR) {
+    if (dataR.location == null && dataR.location === undefined)
+        return '';
+    else
+        return 'Google Maps Address'; //TODO Use Google Maps to get address from GPS
 }

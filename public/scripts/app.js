@@ -1,13 +1,6 @@
-const CLOUDY = 0;
-const CLEAR = 1;
-const RAINY = 2;
-const OVERCAST = 3;
-const SNOWY = 4;
-
-
 /**
  * called by the HTML onload
- * showing any cached forecast data and declaring the service worker
+ * showing any cached stories and declaring the service worker
  */
 function initIns() {
     loadData();
@@ -29,89 +22,57 @@ function initIns() {
     }
 }
 
-/**
- * given the list of cities created by the user, it will retrieve all the data from
- * the server (or failing that) from the database
- */
 function loadData() {
-    let cityList = JSON.parse(localStorage.getItem('cities'));
-    cityList = removeDuplicates(cityList);
-    retrieveAllCitiesData(cityList, new Date().getTime());
+    let user = JSON.parse(localStorage.getItem('user'));
+    loadStoriesById(user.user_id);
 }
 
 /**
- * it cycles through the list of cities and requests the data from the server for each
- * city
- * @param cityList the list of the cities the user has requested
- * @param date the date for the forecasts (not in use)
- */
-function retrieveAllCitiesData(cityList, date) {
-    refreshCityList();
-    for (index in cityList)
-        loadCityData(cityList[index], date);
-}
-
-/**
- * given one city and a date, it queries the server via Ajax to get the latest
- * weather forecast for that city
+ * given user id, it queries the server via Ajax to get the stories for that user
  * if the request to the server fails, it shows the data stored in the database
- * @param city
- * @param date
+ * @param user_id
  */
-function loadCityData(city, date) {
-    const input = JSON.stringify({location: city, date: date});
+function loadStoriesById(user_id) {
+    const user = JSON.stringify({user_id: user_id});
     $.ajax({
-        url: '/weather_data',
-        data: input,
+        url: '/stories/get_stories_by_id', //TODO
         contentType: 'application/json',
         type: 'POST',
+        data: user,
         success: function (dataR) {
-            // no need to JSON parse the result, as we are using
-            // dataType:json, so JQuery knows it and unpacks the
-            // object for us before returning it
-            addToResults(dataR);
-            storeCachedData(dataR.location, dataR);
-            if (document.getElementById('offline_div') != null)
-                document.getElementById('offline_div').style.display = 'none';
+            cleanStories();
+            for (let story of dataR)
+                showStory(story);
+            storeCachedData(user_id, dataR);
+            hideOfflineWarning();
         },
         // the request to the server has failed. Let's show the cached data
         error: function (xhr, status, error) {
             showOfflineWarning();
-            getCachedData(city, date);
-            const dvv = document.getElementById('offline_div');
-            if (dvv != null)
-                dvv.style.display = 'block';
+            getCachedData(user_id);
         }
     });
-    // hide the list of cities if currently shown
-    if (document.getElementById('city_list') != null)
-        document.getElementById('city_list').style.display = 'none';
 }
 
 
 ///////////////////////// INTERFACE MANAGEMENT ////////////
 
 
+function cleanStories() {
+    if (document.getElementById('stories') != null)
+        document.getElementById('stories').innerHTML = '';
+}
+
 /**
- * given the forecast data returned by the server,
- * it adds a row of weather forecasts to the results div
- * @param dataR the data returned by the server:
- * class WeatherForecast{
- *  constructor (location, date, forecast, temperature, wind, precipitations) {
- *    this.location= location;
- *    this.date= date,
- *    this.forecast=forecast;
- *    this.temperature= temperature;
- *    this.wind= wind;
- *    this.precipitations= precipitations;
- *  }
- *}
+ * given the stories returned by the server,
+ * it adds some rows of stories to the stories div
+ * @param dataR the data returned by the server
  */
-function addToResults(dataR) {
-    if (document.getElementById('results') != null) {
+function showStory(dataR) {
+    if (document.getElementById('stories') != null) {
         const card = document.createElement('div');
         // appending a new card
-        document.getElementById('results').appendChild(card);
+        document.getElementById('stories').appendChild(card);
         // formatting the card by applying css classes
         card.classList.add('card');
 
@@ -119,43 +80,48 @@ function addToResults(dataR) {
         card.appendChild(card_body);
         card_body.classList.add('card-body');
 
-        // the following is far from ideal. we should really create divs using javascript
-        // rather than assigning innerHTML
-        card_body.innerHTML ="<div class='row'>" +
-            "<div class='col-sm'><h4 class='card-title'>" + dataR.location + "</h4></div>" +
-            "<div class='col-sm'>" + getForecast(dataR.forecast) + "</div>" +
-            "<div class='col-sm'>" + getTemperature(dataR) + "</div>" +
-            "<div class='col-sm'>" + getPrecipitations(dataR) + "</div>" +
-            "<div class='col-sm'>" + getWind(dataR) + "</div>" +
-            "</div>";
+        const row = document.createElement('div');
+        card_body.appendChild(row);
+        row.classList.add('row');
+
+        //TODO May need a good alternative
+        let pictures = getPictures(dataR);
+        if (!pictures) {
+            console.log('No pictures!');
+            pictures = '(No pictures)';
+        }
+
+        //TODO Need to use JavaScript rather than innerHTML
+        row.innerHTML =
+            "<div class='col-sm'><h4 class='card-title'>" + dataR.user_id + "</h4></div>" +
+            "<div class='col-sm'>" + getDate(dataR) + "</div>" +
+            "<div class='col-sm'>" + getText(dataR) + "</div>" +
+            "<div class='col-sm'>" + pictures + "</div>" +
+            "<div class='col-sm'>" + getLocation(dataR) + "</div>";
+        //TODO Need to get Name of user (from server, may use POST), may read from local storage, initialized when login
     }
 }
 
-
 /**
- * it removes all forecasts from the result div
+ * store user id and name into local storage
+ * @param user_id user ID
  */
-function refreshCityList() {
-    if (document.getElementById('results') != null)
-        document.getElementById('results').innerHTML = '';
+function storeUser(user_id) { //TODO should be called after log in
+    const user = JSON.stringify({user_id: user_id});
+    $.ajax({
+        url: '/users/get_name_by_id',
+        contentType: 'application/json',
+        type: 'POST',
+        data: user,
+        success: function (dataR) { // {user_id: user_id, name: "Neo"}
+            localStorage.setItem('user', JSON.stringify(dataR));
+        },
+        // the request to the server has failed. Let's show the cached data
+        error: function (xhr, status, error) {
+            showOfflineWarning();
+        }
+    });
 }
-
-
-/**
- * it enables selecting the city from the drop down menu
- * it saves the selected city in the database so that it can be retrieved next time
- * @param city
- * @param date
- */
-function selectCity(city, date) {
-    let cityList = JSON.parse(localStorage.getItem('cities'));
-    if (cityList == null) cityList = [];
-    cityList.push(city);
-    cityList = removeDuplicates(cityList);
-    localStorage.setItem('cities', JSON.stringify(cityList));
-    retrieveAllCitiesData(cityList, date);
-}
-
 
 /**
  * When the client gets off-line, it shows an off line warning to the user
@@ -177,7 +143,6 @@ window.addEventListener('online', function (e) {
     loadData();
 }, false);
 
-
 function showOfflineWarning() {
     if (document.getElementById('offline_div') != null)
         document.getElementById('offline_div').style.display = 'block';
@@ -186,28 +151,4 @@ function showOfflineWarning() {
 function hideOfflineWarning() {
     if (document.getElementById('offline_div') != null)
         document.getElementById('offline_div').style.display = 'none';
-}
-
-
-/**
- * it shows the city list in the browser
- */
-function showCityList() {
-    if (document.getElementById('city_list') != null)
-        document.getElementById('city_list').style.display = 'block';
-}
-
-
-/**
- * Given a list of cities, it removes any duplicates
- * @param cityList
- * @returns {Array}
- */
-function removeDuplicates(cityList) {
-    // remove any duplicate
-    const uniqueNames = [];
-    $.each(cityList, function (i, el) {
-        if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
-    });
-    return uniqueNames;
 }
