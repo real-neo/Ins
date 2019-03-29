@@ -35,7 +35,8 @@ function storeCachedData(user_id, stories) {
             console.log('error: ' + error);
             localStorage.setItem(user_id, JSON.stringify(stories));
         });
-    } else localStorage.setItem(user_id, JSON.stringify(stories));
+    } else
+        localStorage.setItem(user_id, JSON.stringify(stories));
 }
 
 /**
@@ -68,7 +69,7 @@ function getCachedData(user_id) {
  * @param user_id
  */
 function getCachedDataFromLocalStorage(user_id) {
-    const stories = localStorage.getItem(user_id);
+    const stories = JSON.parse(localStorage.getItem(user_id));
     if (stories == null)
         showStory({user_id: 'Ins', text: 'You don\'t have any stories!'});
     else {
