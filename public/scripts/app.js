@@ -24,7 +24,8 @@ function initIns() {
 
 function loadData() {
     let user = JSON.parse(localStorage.getItem('user'));
-    loadStoriesById(user.user_id);
+    if (user !== null)
+        loadStoriesById(user.user_id);
 }
 
 /**
