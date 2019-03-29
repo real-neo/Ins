@@ -50,6 +50,7 @@ function loadStoriesById(user_id) {
         // the request to the server has failed. Let's show the cached data
         error: function (xhr, status, error) {
             showOfflineWarning();
+            cleanStories();
             getCachedData(user_id);
         }
     });
