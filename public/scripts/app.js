@@ -92,7 +92,7 @@ function showStory(dataR) {
 
         //TODO Need to use JavaScript rather than innerHTML
         story.innerHTML =
-            '<img class="mr-2 rounded-circle" src="/images/avatar.png" width="48" height="48" alt="avatar">' +
+            '<img class="mr-2 rounded-circle" src="/images/avatars/' + dataR.user_id + '" width="48" height="48" alt="avatar">' +
             '<p class="media-body pb-3 mb-0 small lh-125 border-bottom-0 border-gray">' +
             '<strong class="d-block text-gray-dark">@' + dataR.user_id + '</strong>' +
             getText(dataR) +
