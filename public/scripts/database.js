@@ -10,7 +10,7 @@ function initDatabase() {
     dbPromise = idb.openDb(INS_DB_NAME, 1, function (upgradeDb) {
         if (!upgradeDb.objectStoreNames.contains(INS_STORE_NAME)) {
             const storyDB = upgradeDb.createObjectStore(INS_STORE_NAME, {keyPath: 'id', autoIncrement: true});
-            storyDB.createIndex('user_id', 'user_id', {unique: true});
+            storyDB.createIndex('id', 'id', {unique: true});
         }
     });
 }
