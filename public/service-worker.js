@@ -124,7 +124,7 @@ self.addEventListener('fetch', function (event) {
          * https://jakearchibald.com/2014/offline-cookbook/#on-activate
          */
         event.respondWith(async function () {
-            const cache = await caches.open('mysite-dynamic');
+            const cache = await caches.open('ins-dynamic');
             const cachedResponse = await cache.match(event.request);
             const networkResponsePromise = fetch(event.request);
 
