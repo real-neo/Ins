@@ -26,6 +26,7 @@ const filesToCache = [
     '/styles/all.css',
     '/styles/bootstrap.min.css',
     '/styles/bootstrap.min.css.map',
+    '/styles/login.css',
     '/webfonts/fa-brands-400.eot',
     '/webfonts/fa-brands-400.svg',
     '/webfonts/fa-brands-400.ttf',
