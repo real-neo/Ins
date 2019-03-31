@@ -104,6 +104,17 @@ function showStory(dataR) {
     }
 }
 
+function login() {
+    const email = document.getElementById('inputEmail').value;
+    const password = document.getElementById('inputPassword').value;
+
+    storeUser('neo');
+
+    window.location = '/';
+
+    event.preventDefault();
+}
+
 /**
  * store user id and name into local storage
  * @param user_id user ID
@@ -115,7 +126,7 @@ function storeUser(user_id) { //TODO should be called after log in
         contentType: 'application/json',
         type: 'POST',
         data: user,
-        success: function (dataR) { // {user_id: user_id, name: "Neo"}
+        success: function (dataR) { // {user_id: 'neo, name: 'Neo'}
             localStorage.setItem('user', JSON.stringify(dataR));
         },
         // the request to the server has failed. Let's show the cached data
