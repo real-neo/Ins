@@ -1,9 +1,9 @@
 <%- include('../layout/head'); %>
-<body>
+<body onload="loadData()">
 <nav class="navbar navbar-expand navbar-light bg-light">
     <a class="navbar-brand" href="/">Ins</a>
 
-    <div class="collapse navbar-collapse" id="navbarsExample02">
+    <div class="collapse navbar-collapse">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
                 <a class="nav-link" href="/stories">Stories</a>
@@ -25,10 +25,13 @@
     </div>
     <div class="offline_div" id="offline_div" style="display: none">You are offline</div>
 
-    <div id="stories" class="text-center">
+    <h6 class="pb-2 mb-0">Recent update</h6>
+    <div id="stories">
     </div>
+    <small class="d-block text-right mt-3">
+        <a href="#">All Stories</a>
+    </small>
 </div>
-
 
 </body>
 </html>

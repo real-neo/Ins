@@ -72,19 +72,16 @@ function cleanStories() {
  */
 function showStory(dataR) {
     if (document.getElementById('stories') != null) {
-        const card = document.createElement('div');
-        // appending a new card
-        document.getElementById('stories').appendChild(card);
-        // formatting the card by applying css classes
-        card.classList.add('card');
-
-        const card_body = document.createElement('div');
-        card.appendChild(card_body);
-        card_body.classList.add('card-body');
-
-        const row = document.createElement('div');
-        card_body.appendChild(row);
-        row.classList.add('row');
+        const story = document.createElement('div');
+        // appending a new story
+        document.getElementById('stories').appendChild(story);
+        // formatting by applying css classes
+        story.classList.add('media');
+        story.classList.add('my-3');
+        story.classList.add('p-3');
+        story.classList.add('bg-white');
+        story.classList.add('rounded');
+        story.classList.add('shadow-sm');
 
         //TODO May need a good alternative
         let pictures = getPictures(dataR);
@@ -94,12 +91,12 @@ function showStory(dataR) {
         }
 
         //TODO Need to use JavaScript rather than innerHTML
-        row.innerHTML =
-            "<div class='col-sm'><h4 class='card-title'>" + dataR.user_id + "</h4></div>" +
-            "<div class='col-sm'>" + getDate(dataR) + "</div>" +
-            "<div class='col-sm'>" + getText(dataR) + "</div>" +
-            "<div class='col-sm'>" + pictures + "</div>" +
-            "<div class='col-sm'>" + getLocation(dataR) + "</div>";
+        story.innerHTML =
+            '<img class="mr-2 rounded-circle" src="/images/avatar.png" width="48" height="48" alt="avatar">' +
+            '<p class="media-body pb-3 mb-0 small lh-125 border-bottom-0 border-gray">' +
+            '<strong class="d-block text-gray-dark">@' + dataR.user_id + '</strong>' +
+            getText(dataR) +
+            '</p>';
         //TODO Need to get Name of user (from server, may use POST), may read from local storage, initialized when login
     }
 }
