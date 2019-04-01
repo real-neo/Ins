@@ -9,6 +9,11 @@
                 <a class="nav-link" href="/stories">Stories</a>
             </li>
         </ul>
+
+        <form class="form-inline mt-2 mt-md-0">
+            <input id="searchBox" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick="search()">Search</button>
+        </form>
     </div>
 </nav>
 
@@ -25,7 +30,7 @@
     </div>
     <div class="offline_div" id="offline_div" style="display: none">You are offline</div>
 
-    <h6 class="pb-2 mb-0">Recent update</h6>
+    <h6 id="title" class="pb-2 mb-0">Recent update</h6>
     <div id="stories">
     </div>
     <small class="d-block text-right mt-3">

@@ -79,6 +79,37 @@ function getCachedDataFromLocalStorage(user_id) {
     }
 }
 
+function searchByKeyword(keyword) {
+    if (dbPromise) {
+        dbPromise.then(function (db) {
+            console.log('searching: ' + keyword);
+            db.transaction(INS_STORE_NAME, 'readonly')
+                .objectStore(INS_STORE_NAME)
+                .getAll()
+                .then(function (stories) {
+                    document.getElementById('title').innerText = 'Search result';
+                    cleanStories();
+                    for (let story of stories) {
+                        console.log(story);
+                        if (story.text.toLowerCase().search(keyword.toLowerCase()) > -1)
+                            showStory(story);
+                    }
+                });
+        });
+    } else {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const stories = JSON.parse(localStorage.getItem(user.user_id));
+        if (stories == null)
+            showStory({user_id: 'Ins', text: 'You don\'t have any stories!'});
+        else {
+            for (let story of stories) {
+                if (story.text.toLowerCase().search(keyword.toLowerCase()) > -1)
+                    showStory(story);
+            }
+        }
+    }
+}
+
 function showDate(dataR) {
     if (dataR.date == null && dataR.date === undefined)
         return 'Unknown time';

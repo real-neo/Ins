@@ -134,6 +134,14 @@ function storeUser(user_id) { //TODO should be called after log in
     });
 }
 
+function search() {
+    let keyword = document.getElementById('searchBox').value;
+    if (keyword !== '') {
+        searchByKeyword(keyword);
+    }
+    event.preventDefault();
+}
+
 /**
  * When the client gets off-line, it shows an off line warning to the user
  * so that it is clear that the data is stale
