@@ -70,6 +70,22 @@ function cleanStories() {
  */
 function showStory(dataR) {
     if (document.getElementById('stories') != null) {
+        $.ajax({
+            url: '/users/get_name_by_id/' + dataR.user_id,
+            type: 'get',
+            success: function (R) {
+                showStoryWithName(dataR, R);
+            },
+            error: function (xhr, status, error) {
+                showStoryWithName(dataR, '');
+                showOfflineWarning();
+            }
+        });
+    }
+}
+
+function showStoryWithName(dataR, name) {
+    if (document.getElementById('stories') != null) {
         const story = document.createElement('div');
         // appending a new story
         document.getElementById('stories').appendChild(story);

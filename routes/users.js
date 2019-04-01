@@ -10,4 +10,10 @@ router.get('/', function (req, res, next) {
 
 router.post('/get_name_by_id', user.getNameById);
 
+router.get('/get_name_by_id/:user_id', function (req, res) {
+    //TODO Query name of user from db
+    console.log('Querying: ' + req.params.user_id);
+    res.send('Neo');
+});
+
 module.exports = router;
