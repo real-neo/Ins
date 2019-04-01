@@ -99,8 +99,7 @@ self.addEventListener('activate', function (e) {
  */
 self.addEventListener('fetch', function (event) {
     console.log('[Service Worker] Fetch', event.request.url);
-    const dataUrl = '/weather_data';
-    //if the request is '/weather_data', post to the server
+    const dataUrl = '/stories/get_stories_by_id';
     if (event.request.url.indexOf(dataUrl) > -1) {
         /*
          * When the request URL contains dataUrl, the app is asking for fresh
