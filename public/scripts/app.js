@@ -3,7 +3,6 @@
  * showing any cached stories and declaring the service worker
  */
 function initIns() {
-    loadData();
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker
             .register('./service-worker.js')
