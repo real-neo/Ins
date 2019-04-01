@@ -75,3 +75,41 @@ function snapshot() {
         }
     }
 }
+
+function postNewStory() {
+    let user = JSON.parse(localStorage.getItem('user'));
+    if (user === null) { //TODO Check if user logged in by a good way
+        alert('You did not log in!');
+        window.location = '/login';
+    } else {
+        const newStoryContent = document.getElementById('new_story').value;
+        if (newStoryContent === '') {
+            alert('Content can not be blank!');
+            return;
+        }
+        const canvas = document.querySelector('canvas');
+        // sendImage(user.user_id, canvas.toDataURL());
+        const newStory = [
+            {user_id: user.user_id, date: new Date().getTime(), text: newStoryContent, pictures: canvas.toDataURL()}
+        ];
+        //TODO 1.save into another db 2.send to server 3.redirect to stories page
+        storeCachedData(user.user_id, newStory);
+        alert('Successfully!');
+        window.location = '/stories';
+    }
+}
+
+function sendImage(user_id, image) {
+    const data = {user_id: user_id, image: image};
+    $.ajax({
+        dataType: "json",
+        url: '/upload_img',
+        type: "POST",
+        data: data,
+        success: function (data) {
+            alert('Image upload successfully!');
+        }, error: function (err) {
+            alert('Error: ' + err.status + ':' + err.statusText);
+        }
+    });
+}
