@@ -86,6 +86,7 @@ function showStory(dataR) {
         let imgDisplay = 'block';
         if (!pictures) {
             console.log('No pictures!');
+            pictures = '';
             imgDisplay = 'none';
         }
 
