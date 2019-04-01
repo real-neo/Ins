@@ -56,11 +56,22 @@ function handleError(error) {
 
 function snapshot() {
     if (window.stream) {
-        canvas.height = videoElement.videoHeight;
-        canvas.width = videoElement.videoWidth;
-        let context = canvas.getContext('2d');
-        context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-        document.querySelector('img').src = canvas.toDataURL('image/png');
+        const videoDIV = document.getElementById('video-stream');
+        const snapshotDIV = document.getElementById('snapshot-show');
+        if (videoDIV.style.display === 'none') {
+            // videoDIV.style.display = 'block';
+            // snapshotDIV.style.display = 'none';
+            // document.querySelector('img').src = '';
+            sendImage('neo', canvas.toDataURL());
+        } else {
+            videoDIV.style.display = 'none';
+            snapshotDIV.style.display = 'block';
 
+            canvas.height = videoElement.videoHeight;
+            canvas.width = videoElement.videoWidth;
+            let context = canvas.getContext('2d');
+            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            document.querySelector('img').src = canvas.toDataURL('image/png');
+        }
     }
 }

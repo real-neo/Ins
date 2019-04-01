@@ -149,6 +149,21 @@ function postNewStory() {
     }
 }
 
+function sendImage(user_id, image) {
+    const data = {user_id: user_id, image: image};
+    $.ajax({
+        dataType: "json",
+        url: '/upload_img',
+        type: "POST",
+        data: data,
+        success: function (data) {
+            alert('Image upload successfully!');
+        }, error: function (err) {
+            alert('Error: ' + err.status + ':' + err.statusText);
+        }
+    });
+}
+
 /**
  * When the client gets off-line, it shows an off line warning to the user
  * so that it is clear that the data is stale
