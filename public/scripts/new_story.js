@@ -4,6 +4,8 @@ let videoElement = document.querySelector('video');
 // const audioSelect = document.querySelector('select#audioSource');
 const videoSelect = document.querySelector('select#videoSource');
 const canvas = document.querySelector('canvas');
+const locationCheck = document.getElementById('locationCheck');
+let latitude, longitude;
 
 navigator.mediaDevices.enumerateDevices().then(gotDevices).then(getStream).catch(handleError);
 
@@ -89,9 +91,17 @@ function postNewStory() {
         }
         const canvas = document.querySelector('canvas');
         // sendImage(user.user_id, canvas.toDataURL());
-        const newStory = [
-            {user_id: user.user_id, date: new Date().getTime(), text: newStoryContent, pictures: canvas.toDataURL()}
-        ];
+        let location = null;
+        if (locationCheck.checked === true) {
+            location = latitude + '' + longitude;
+        }
+        const newStory = [{
+            user_id: user.user_id,
+            date: new Date().getTime(),
+            text: newStoryContent,
+            pictures: canvas.toDataURL(),
+            location: location
+        }];
         //TODO 1.save into another db 2.send to server 3.redirect to stories page
         storeCachedData(user.user_id, newStory);
         alert('Successfully!');
@@ -112,4 +122,23 @@ function sendImage(user_id, image) {
             alert('Error: ' + err.status + ':' + err.statusText);
         }
     });
+}
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(gotLocation);
+    } else {
+        alert('Geolocation is not supported by this browser.');
+    }
+}
+
+function gotLocation(position) {
+    latitude = position.coords.latitude;
+    longitude = position.coords.longitude;
+}
+
+function toggleLocation() {
+    if (locationCheck.checked === true) {
+        getLocation();
+    }
 }
