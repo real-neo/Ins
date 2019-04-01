@@ -79,28 +79,28 @@ function getCachedDataFromLocalStorage(user_id) {
     }
 }
 
-function getDate(dataR) {
+function showDate(dataR) {
     if (dataR.date == null && dataR.date === undefined)
         return 'Unknown time';
     else
         return dataR.date;
 }
 
-function getText(dataR) {
+function showText(dataR) {
     if (dataR.text == null && dataR.text === undefined)
         return '(No content)';
     else
         return dataR.text;
 }
 
-function getPictures(dataR) {
+function showPictures(dataR) {
     if (dataR.pictures == null && dataR.pictures === undefined)
         return null; //TODO Check pictures before show them
     else
         return dataR.pictures;
 }
 
-function getLocation(dataR) {
+function showLocation(dataR) {
     if (dataR.location == null && dataR.location === undefined)
         return '';
     else

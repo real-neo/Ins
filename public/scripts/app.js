@@ -82,7 +82,7 @@ function showStory(dataR) {
         story.classList.add('shadow-sm');
 
         //TODO May need a good alternative
-        let pictures = getPictures(dataR);
+        let pictures = showPictures(dataR);
         if (!pictures) {
             console.log('No pictures!');
             pictures = '';
@@ -93,8 +93,8 @@ function showStory(dataR) {
             '<img class="mr-2 rounded-circle" src="/images/avatars/' + dataR.user_id + '" width="48" height="48" alt="avatar">' +
             '<p class="media-body pb-3 mb-0 small lh-125 border-bottom-0 border-gray">' +
             '<strong class="d-block text-gray-dark">@' + dataR.user_id + '</strong>' +
-            getText(dataR) +
-            '<img src="'+pictures+'" width="128" height="128" alt="">' +
+            showText(dataR) +
+            '<img src="' + pictures + '" width="128" height="128" alt="">' +
             '</p>';
         //TODO Need to get Name of user (from server, may use POST), may read from local storage, initialized when login
     }
