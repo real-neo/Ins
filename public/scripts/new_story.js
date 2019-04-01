@@ -6,6 +6,7 @@ const videoSelect = document.querySelector('select#videoSource');
 const canvas = document.querySelector('canvas');
 const locationCheck = document.getElementById('locationCheck');
 let latitude, longitude;
+let hasPic = false;
 
 navigator.mediaDevices.enumerateDevices().then(gotDevices).then(getStream).catch(handleError);
 
@@ -61,10 +62,11 @@ function snapshot() {
         const videoDIV = document.getElementById('video-stream');
         const snapshotDIV = document.getElementById('snapshot-show');
         if (videoDIV.style.display === 'none') {
-            // videoDIV.style.display = 'block';
-            // snapshotDIV.style.display = 'none';
+            videoDIV.style.display = 'block';
+            snapshotDIV.style.display = 'none';
             // document.querySelector('img').src = '';
-            sendImage('neo', canvas.toDataURL());
+            // sendImage('neo', canvas.toDataURL());
+            hasPic = false;
         } else {
             videoDIV.style.display = 'none';
             snapshotDIV.style.display = 'block';
@@ -74,6 +76,7 @@ function snapshot() {
             let context = canvas.getContext('2d');
             context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
             document.querySelector('img').src = canvas.toDataURL('image/png');
+            hasPic = true;
         }
     }
 }
@@ -99,7 +102,7 @@ function postNewStory() {
             user_id: user.user_id,
             date: new Date().getTime(),
             text: newStoryContent,
-            pictures: canvas.toDataURL(),
+            pictures: hasPic ? canvas.toDataURL() : null,
             location: location
         }];
         //TODO 1.save into another db 2.send to server 3.redirect to stories page

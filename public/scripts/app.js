@@ -83,9 +83,10 @@ function showStory(dataR) {
 
         //TODO May need a good alternative
         let pictures = showPictures(dataR);
+        let imgDisplay = 'block';
         if (!pictures) {
             console.log('No pictures!');
-            pictures = '';
+            imgDisplay = 'none';
         }
 
         //TODO Need to use JavaScript rather than innerHTML
@@ -94,7 +95,7 @@ function showStory(dataR) {
             '<p class="media-body pb-3 mb-0 small lh-125 border-bottom-0 border-gray">' +
             '<strong class="d-block text-gray-dark">@' + dataR.user_id + '</strong>' +
             showText(dataR) + '<br>' +
-            '<img src="' + pictures + '" width="128" height="128" alt="">' + '<br>' +
+            '<img src="' + pictures + '" width="128" height="128" alt="" style="display: '+imgDisplay+';">' + '<br>' +
             showLocation(dataR) +
             '</p>';
         //TODO Need to get Name of user (from server, may use POST), may read from local storage, initialized when login
