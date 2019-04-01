@@ -139,9 +139,3 @@ function gotLocation(position) {
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;
 }
-
-function toggleLocation() {
-    if (locationCheck.checked === true) {
-        getLocation();
-    }
-}
