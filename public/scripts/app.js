@@ -124,7 +124,7 @@ function storeUser(user_id) { //TODO should be called after log in
         contentType: 'application/json',
         type: 'POST',
         data: user,
-        success: function (dataR) { // {user_id: 'neo, name: 'Neo'}
+        success: function (dataR) { // {user_id: 'neo', name: 'Neo'}
             localStorage.setItem('user', JSON.stringify(dataR));
         },
         // the request to the server has failed. Let's show the cached data
