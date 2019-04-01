@@ -85,7 +85,7 @@ function showStory(dataR) {
         let pictures = getPictures(dataR);
         if (!pictures) {
             console.log('No pictures!');
-            pictures = '(No pictures)';
+            pictures = '';
         }
 
         //TODO Need to use JavaScript rather than innerHTML
@@ -94,6 +94,7 @@ function showStory(dataR) {
             '<p class="media-body pb-3 mb-0 small lh-125 border-bottom-0 border-gray">' +
             '<strong class="d-block text-gray-dark">@' + dataR.user_id + '</strong>' +
             getText(dataR) +
+            '<img src="'+pictures+'" width="128" height="128" alt="">' +
             '</p>';
         //TODO Need to get Name of user (from server, may use POST), may read from local storage, initialized when login
     }
@@ -138,11 +139,12 @@ function postNewStory() {
         window.location = '/login';
     } else {
         const newStoryContent = document.getElementById('new_story').value;
+        const canvas = document.querySelector('canvas');
+        // sendImage(user.user_id, canvas.toDataURL());
         const newStory = [
-            {user_id: user.user_id, date: new Date().getTime(), text: newStoryContent}
+            {user_id: user.user_id, date: new Date().getTime(), text: newStoryContent, pictures: canvas.toDataURL()}
         ];
         //TODO 1.save into another db 2.send to server 3.redirect to stories page
-
         storeCachedData(user.user_id, newStory);
         alert('Successfully!');
         window.location = '/stories';
