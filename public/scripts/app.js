@@ -93,9 +93,10 @@ function showStory(dataR) {
         story.innerHTML =
             '<img class="mr-2 rounded-circle" src="/images/avatars/' + dataR.user_id + '" width="48" height="48" alt="avatar">' +
             '<p class="media-body pb-3 mb-0 small lh-125 border-bottom-0 border-gray">' +
-            '<strong class="d-block text-gray-dark">@' + dataR.user_id + '</strong>' +
+            '<strong class="d-block text-gray-dark">' + name + ' @' + dataR.user_id + '</strong>' +
+            new Date(dataR.date).toUTCString() + '<br>' +
             showText(dataR) + '<br>' +
-            '<img src="' + pictures + '" width="128" height="128" alt="" style="display: '+imgDisplay+';">' + '<br>' +
+            '<img src="' + pictures + '" width="128" height="128" alt="" style="display: ' + imgDisplay + ';">' + '<br>' +
             showLocation(dataR) +
             '</p>';
         //TODO Need to get Name of user (from server, may use POST), may read from local storage, initialized when login
