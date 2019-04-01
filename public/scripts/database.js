@@ -11,6 +11,7 @@ function initDatabase() {
         if (!upgradeDb.objectStoreNames.contains(INS_STORE_NAME)) {
             const storyDB = upgradeDb.createObjectStore(INS_STORE_NAME, {keyPath: 'id', autoIncrement: true});
             storyDB.createIndex('id', 'id', {unique: true});
+            storyDB.createIndex('user_id', 'user_id');
         }
     });
 }
