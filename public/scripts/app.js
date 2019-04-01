@@ -41,10 +41,9 @@ function loadStoriesById(user_id) {
         type: 'POST',
         data: user,
         success: function (dataR) {
-            cleanStories();
-            for (let story of dataR)
-                showStory(story);
             storeCachedData(user_id, dataR);
+            cleanStories();
+            getCachedData(user_id);
             hideOfflineWarning();
         },
         // the request to the server has failed. Let's show the cached data
@@ -131,6 +130,24 @@ function storeUser(user_id) { //TODO should be called after log in
             showOfflineWarning();
         }
     });
+}
+
+function postNewStory() {
+    let user = JSON.parse(localStorage.getItem('user'));
+    if (user === null) { //TODO Check if user logged in by a good way
+        alert('You did not log in!');
+        window.location = '/login';
+    } else {
+        const newStoryContent = document.getElementById('new_story').value;
+        const newStory = [
+            {user_id: user.user_id, date: new Date().getTime(), text: newStoryContent}
+        ];
+        //TODO 1.save into another db 2.send to server 3.redirect to stories page
+
+        storeCachedData(user.user_id, newStory);
+        alert('Successfully!');
+        window.location = '/stories';
+    }
 }
 
 /**

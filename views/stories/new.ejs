@@ -1,5 +1,5 @@
 <%- include('../layout/head'); %>
-<body>
+<body onload="initIns()">
 <nav class="navbar navbar-expand navbar-light bg-light">
     <a class="navbar-brand" href="/">Ins</a>
 
@@ -14,9 +14,11 @@
 
 <div class="container text-center">
 
-    <div class="Input_text">
-        <textarea type="text" rows="5" cols="20" placeholder="Let's share something new~" class="input-text w200 form-control" aria-describedby="basic-addon1" name="keyword" id="keyword" ></textarea>
-        <input class="btn btn-primary" type="submit" value="Submit">
+    <div class="form-group">
+        <label for="new_story"></label>
+        <textarea class="form-control mb-3" rows="5" cols="20" id="new_story"
+                  placeholder="Let's share something new~"></textarea>
+        <button type="submit" class="btn btn-primary" onclick="postNewStory()">Post</button>
     </div>
 
     <div class="select">
