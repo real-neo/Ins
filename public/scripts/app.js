@@ -139,6 +139,10 @@ function postNewStory() {
         window.location = '/login';
     } else {
         const newStoryContent = document.getElementById('new_story').value;
+        if (newStoryContent === '') {
+            alert('Content can not be blank!');
+            return;
+        }
         const canvas = document.querySelector('canvas');
         // sendImage(user.user_id, canvas.toDataURL());
         const newStory = [
