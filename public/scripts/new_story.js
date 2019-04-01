@@ -93,7 +93,7 @@ function postNewStory() {
         // sendImage(user.user_id, canvas.toDataURL());
         let location = null;
         if (locationCheck.checked === true) {
-            location = latitude + '' + longitude;
+            location = {latitude: latitude, longitude: longitude};
         }
         const newStory = [{
             user_id: user.user_id,

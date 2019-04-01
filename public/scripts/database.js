@@ -101,8 +101,8 @@ function showPictures(dataR) {
 }
 
 function showLocation(dataR) {
-    if (dataR.location == null && dataR.location === undefined)
+    if (dataR.location == null)
         return '';
     else
-        return 'Google Maps Address'; //TODO Use Google Maps to get address from GPS
+        return 'Latitude: ' + dataR.location.latitude + ' Longitude: ' + dataR.location.longitude; //TODO Use Google Maps to get address from GPS
 }

@@ -93,8 +93,9 @@ function showStory(dataR) {
             '<img class="mr-2 rounded-circle" src="/images/avatars/' + dataR.user_id + '" width="48" height="48" alt="avatar">' +
             '<p class="media-body pb-3 mb-0 small lh-125 border-bottom-0 border-gray">' +
             '<strong class="d-block text-gray-dark">@' + dataR.user_id + '</strong>' +
-            showText(dataR) +
-            '<img src="' + pictures + '" width="128" height="128" alt="">' +
+            showText(dataR) + '<br>' +
+            '<img src="' + pictures + '" width="128" height="128" alt="">' + '<br>' +
+            showLocation(dataR) +
             '</p>';
         //TODO Need to get Name of user (from server, may use POST), may read from local storage, initialized when login
     }
