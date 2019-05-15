@@ -1,10 +1,10 @@
 var mongoose = require('mongoose');
-var ObjectId = require('mongodb').ObjectID;
-var bcrypt = require('bcryptjs');
+// var ObjectId = require('mongodb').ObjectID;
+// var bcrypt = require('bcryptjs');
 
 //The URL which will be queried. Run "mongod.exe" for this to connect
 //var url = 'mongodb://localhost:27017/test';
-const mongoDB = 'mongodb://localhost:27019/stories';
+const mongoDB = 'mongodb://localhost:27017/Ins';
 
 mongoose.Promise = global.Promise;
 mongoose.connect(mongoDB);

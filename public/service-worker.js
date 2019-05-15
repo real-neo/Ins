@@ -80,7 +80,8 @@ self.addEventListener('activate', function (e) {
 self.addEventListener('fetch', function (event) {
     console.log('[Service Worker] Fetch', event.request.url);
     const dataUrl = '/stories/get_stories_by_id';
-    if (event.request.url.indexOf(dataUrl) > -1) {
+    const mongoUrl = '/stories/storiesMongo';
+    if (event.request.url.indexOf(dataUrl) > -1 || event.request.url.indexOf(mongoUrl) > -1) {
         return fetch(event.request).then(function (response) {
             // note: if the network is down, response will contain the error
             // that will be passed to Ajax

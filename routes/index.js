@@ -2,10 +2,14 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs-extra');
+// var initDB= require('../controllers/init');
+// initDB.init();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
+
     res.render('index');
+
 });
 
 router.get('/login', function (req, res) {
