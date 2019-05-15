@@ -5,7 +5,7 @@ exports.getNameById = function (req, res) {
     if (userData == null) {
         res.status(403).send('No data sent!')
     }
-    userData.name = "Neo";
+    userData.name = 'Neo';
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(userData));
 };

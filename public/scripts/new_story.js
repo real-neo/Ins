@@ -98,40 +98,29 @@ function postNewStory() {
         if (locationCheck.checked === true) {
             location = {latitude: latitude, longitude: longitude};
         }
-        const newStory = [{
+        const newStory = {
             user_id: user.user_id,
             date: new Date().getTime(),
             text: newStoryContent,
             pictures: hasPic ? canvas.toDataURL() : null,
             location: location
-        }];
-        const fStory = JSON.stringify(newStory[0]);
+        };
+
         $.ajax({
-            url: '/stories/storiesMongo',
-            contentType: 'application/json',
-            type: 'POST',
-            data: fStory,
-            success: function (dataR) {
-                alert(dataR)
-            },
-            // the request to the server has failed. Let's show the cached data
-            error: function (xhr, status, error) {
-                alert('Fail.'+ error.message)
+            dataType: "json",
+            url: '/stories/new',
+            type: "POST",
+            data: newStory,
+            success: function (data) {
+                alert(data);
+            }, error: function (err) {
+                alert('Error: ' + err.status + ':' + err.statusText);
             }
         });
-        // const story = new Story({
-        //     user_id:user.user_id,
-        //     date:new Date().getTime(),
-        //     text: newStoryContent,
-        //     pictures: hasPic ? canvas.toDataURL() : null,
-        //     location: location
-        // });
-        // story.save(function (err,results){
-        //     console.log('wewewewewe' + results._id);
-        // });
+
         //TODO 1.save into another db 2.send to server 3.redirect to stories page
-        storeCachedData(user.user_id, newStory);
-        alert('Successfully!' + fStory.date);
+        storeCachedData(user.user_id, [newStory]);
+        alert('Successfully!' + newStory.date);
         window.location = '/stories';
     }
 }

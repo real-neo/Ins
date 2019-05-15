@@ -1,4 +1,4 @@
-var Story = require('../models/story');
+const Story = require('../models/story');
 
 exports.index = function (req, res) {
     res.render('stories/index');
@@ -21,19 +21,19 @@ exports.getStoriesById = function (req, res) {
     res.send(JSON.stringify(stories));
 };
 
-exports.storyMongo = function (req, res) {
+exports.createNew = function (req, res) {
     const newStory = req.body;
-    var story = new Story({
-        user_id:newStory.user_id,
-        date:newStory.date,
-        text:newStory.text,
-        pictures:newStory.pictures,
-        location:[newStory.location.latitude, newStory.location.longitude]
+    const story = new Story({
+        user_id: newStory.user_id,
+        date: newStory.date,
+        text: newStory.text,
+        pictures: newStory.pictures,
+        location: [newStory.location.latitude, newStory.location.longitude]
     });
     story.save(function (err, results) {
         console.log('newStory:::::::::::::::::::::::' + newStory);
         console.log('story:::::::::::::::::::::::' + story);
         console.log('db:::::::::::::::::::::::' + results);
     });
-    res.send('fuck you');
+    res.send('Nice!');
 };

@@ -7,8 +7,8 @@ router.get('/', story.index);
 
 router.get('/new', story.new);
 
-router.post('/get_stories_by_id', story.getStoriesById);
+router.post('/new', story.createNew);
 
-router.post('/storiesMongo', story.storyMongo);
+router.post('/get_stories_by_id', story.getStoriesById);
 
 module.exports = router;
