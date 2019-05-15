@@ -107,10 +107,10 @@ function postNewStory() {
         };
 
         $.ajax({
-            dataType: "json",
+            contentType: "application/json",
             url: '/stories/new',
             type: "POST",
-            data: newStory,
+            data: JSON.stringify(newStory),
             success: function (data) {
                 alert(data);
             }, error: function (err) {
