@@ -8,6 +8,4 @@ const StorySchema = mongoose.Schema({
     location: {type: Array}
 });
 
-StorySchema.set('toObject', {getters: true, virtuals: true});
-
 module.exports = mongoose.model('Story', StorySchema);
