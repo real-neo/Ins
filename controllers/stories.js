@@ -13,12 +13,28 @@ exports.getStoriesById = function (req, res) {
     if (userData == null) {
         res.status(403).send('No data sent!')
     }
-    let stories = [
-        {id: 0, user_id: 'neo', date: 1553803879301, text: 'This is a test blog.'},
-        {id: 1, user_id: 'neo', date: 1553803899301, text: 'This is another test blog.'}
-    ];
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(stories));
+    console.log('Querying POST get_stories_by_id: ' + userData.user_id);
+
+    let stories = [];
+
+    Story.find({'user_id': userData.user_id}).cursor().eachAsync(mongoStory => {
+        console.log(mongoStory);
+        let newStory = {
+            id: mongoStory._id,
+            user_id: mongoStory.user_id,
+            date: mongoStory.date,
+            text: mongoStory.text,
+            pictures: mongoStory.pictures,
+            location: {
+                latitude: mongoStory.location[0],
+                longitude: mongoStory.location[1]
+            }
+        };
+        stories.push(newStory);
+    }).then(function () {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify(stories));
+    });
 };
 
 exports.createNew = function (req, res) {

@@ -12,7 +12,7 @@ router.post('/get_name_by_id', user.getNameById);
 
 router.get('/get_name_by_id/:user_id', function (req, res) {
     //TODO Query name of user from db
-    console.log('Querying: ' + req.params.user_id);
+    console.log('Querying GET get_name_by_id: ' + req.params.user_id);
     res.send('Neo');
 });
 
