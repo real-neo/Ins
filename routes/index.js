@@ -51,22 +51,4 @@ router.post('/upload_img', function (req, res) {
     res.end(JSON.stringify({data: ''}));
 });
 
-class Story {
-    /**
-     * @param user_id
-     * @param date
-     * @param text
-     * @param pictures
-     * @param location
-     * @constructor
-     */
-    constructor(user_id, date, text, pictures, location) {
-        this.user_id = user_id;
-        this.date = date;
-        this.text = text;
-        this.pictures = pictures;
-        this.location = location;
-    }
-}
-
 module.exports = router;
