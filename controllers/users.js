@@ -1,3 +1,5 @@
+const User = require('../models/user');
+
 exports.getNameById = function (req, res) {
     const userData = req.body;
     if (userData == null) {
