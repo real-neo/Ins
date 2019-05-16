@@ -1,19 +1,19 @@
-const express = require('express');
-const router = express.Router();
-
+const router = require('express').Router();
 const user = require('../controllers/users');
 
-/* GET users listing. */
-router.get('/', function (req, res, next) {
-    res.send('respond with a resource');
-});
+module.exports = function (passport) {
+    /* GET users listing. */
+    router.get('/', function (req, res, next) {
+        res.send('respond with a resource');
+    });
 
-router.post('/get_name_by_id', user.getNameById);
+    router.post('/get_name_by_id', user.getNameById);
 
-router.get('/get_name_by_id/:user_id', function (req, res) {
-    //TODO Query name of user from db
-    console.log('Querying GET get_name_by_id: ' + req.params.user_id);
-    res.send('Neo');
-});
+    router.get('/get_name_by_id/:user_id', function (req, res) {
+        //TODO Query name of user from db
+        console.log('Querying GET get_name_by_id: ' + req.params.user_id);
+        res.send('Neo');
+    });
 
-module.exports = router;
+    return router;
+};

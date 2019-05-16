@@ -4,10 +4,11 @@ const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const passport = require('passport');
+// const flash = require('connect-flash');
 
-const index = require('./routes/index');
-const users = require('./routes/users');
-const stories = require('./routes/stories');
+require('./config/passport')(passport);
 
 const app = express();
 
@@ -21,7 +22,20 @@ app.use(logger('dev'));
 app.use(bodyParser.json({limit: '10mb'}));
 app.use(bodyParser.urlencoded({limit: '10mb', extended: false}));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
+app.use(session({
+    secret: 'cats',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {secure: true}
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+// app.use(flash());
+
+const index = require('./routes/index')(passport);
+const users = require('./routes/users')(passport);
+const stories = require('./routes/stories')(passport);
 
 app.use('/', index);
 app.use('/users', users);

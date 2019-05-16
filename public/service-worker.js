@@ -16,6 +16,8 @@ const dataCacheName = 'insData-v1';
 const cacheName = 'insPWA-v1';
 const filesToCache = [
     '/',
+    '/favicon.ico',
+    '/images/icons/icon-256x256.png',
     '/scripts/app.js',
     '/scripts/bootstrap.bundle.min.js',
     '/scripts/bootstrap.bundle.min.js.map',
@@ -27,6 +29,7 @@ const filesToCache = [
     '/styles/bootstrap.min.css',
     '/styles/bootstrap.min.css.map',
     '/styles/login.css',
+    '/styles/register.css',
     '/webfonts/fa-brands-400.eot',
     '/webfonts/fa-brands-400.svg',
     '/webfonts/fa-brands-400.ttf',
@@ -80,7 +83,9 @@ self.addEventListener('activate', function (e) {
 self.addEventListener('fetch', function (event) {
     console.log('[Service Worker] Fetch', event.request.url);
     const dataUrl = '/stories/get_stories_by_id';
-    if (event.request.url.indexOf(dataUrl) > -1) {
+    if (event.request.url.indexOf('/login') > -1 || event.request.url.indexOf('/register') > -1) {
+        return false;
+    } else if (event.request.url.indexOf(dataUrl) > -1) {
         return fetch(event.request).then(function (response) {
             // note: if the network is down, response will contain the error
             // that will be passed to Ajax

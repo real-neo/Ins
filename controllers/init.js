@@ -1,11 +1,9 @@
-const mongoose = require('mongoose');
 const Story = require('../models/story');
 const User = require('../models/user');
 
 exports.init = function () {
-
     const story = new Story({
-        user_id: 'neo',
+        user_id: 'real-neo',
         date: '1553803899301',
         text: 'Init'
         // pictures:
@@ -13,9 +11,12 @@ exports.init = function () {
     story.save();
 
     const user = new User({
-        email:'qwqwqw@11.cc',
-        user_id: 'neo',
-        name: 'Neo'
+        local: {
+            email: 'questionyugood@gmail.com',
+            user_id: 'real-neo',
+            name: 'Neo',
+        }
     });
+    user.setPassword('123');
     user.save();
 };
