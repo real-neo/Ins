@@ -45,6 +45,7 @@ function getMyId() {
 }
 
 function loadMyStories() {
+    console.log('Loading my stories');
     let user = JSON.parse(localStorage.getItem('user'));
     if (user !== null)
         loadStoriesById(user.user_id);
@@ -56,6 +57,7 @@ function loadMyStories() {
  * @param user_id
  */
 function loadStoriesById(user_id) {
+    console.log('Loading stories ::: ' + user_id);
     const user = {user_id: user_id};
     $.ajax({
         url: '/stories/get_stories_by_id',

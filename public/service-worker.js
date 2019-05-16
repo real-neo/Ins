@@ -82,14 +82,15 @@ self.addEventListener('activate', function (e) {
 
 self.addEventListener('fetch', function (event) {
     console.log('[Service Worker] Fetch', event.request.url);
-    const dataUrl = '/stories/get_stories_by_id';
+    const storyUrl = '/stories';
     const avatarUrl = '/images/avatars';
     if (event.request.url.indexOf('/login') > -1 ||
         event.request.url.indexOf('/register') > -1 ||
         event.request.url.indexOf('/stories/create_new') > -1) {
-        console.log('::::::::::::::::::0 - responding');
+        // Ignore these urls
+        console.log('::::::::::::::::::0 - starting');
         return false;
-    } else if (event.request.url.indexOf(dataUrl) > -1) {
+    } else if (event.request.url.indexOf(storyUrl) > -1) {
         // Network falling back to cache
         console.log('::::::::::::::::::1 - starting');
         event.respondWith(async function () {
@@ -97,10 +98,8 @@ self.addEventListener('fetch', function (event) {
             try {
                 const cache = await caches.open('ins-dynamic');
                 const networkResponsePromise = fetch(event.request);
-                event.waitUntil(async function () {
-                    const networkResponse = await networkResponsePromise;
-                    await cache.put(event.request, networkResponse.clone());
-                }());
+                const networkResponse = await networkResponsePromise;
+                await cache.put(event.request, networkResponse.clone());
                 console.log('::::::::::::::::::1 - network');
                 return networkResponsePromise;
             } catch (e) {
@@ -120,10 +119,8 @@ self.addEventListener('fetch', function (event) {
             try {
                 const cache = await caches.open('ins-dynamic');
                 const networkResponsePromise = fetch(event.request);
-                event.waitUntil(async function () {
-                    const networkResponse = await networkResponsePromise;
-                    await cache.put(event.request, networkResponse.clone());
-                }());
+                const networkResponse = await networkResponsePromise;
+                await cache.put(event.request, networkResponse.clone());
                 console.log('::::::::::::::::::2 - network');
                 return networkResponsePromise;
             } catch (e) {

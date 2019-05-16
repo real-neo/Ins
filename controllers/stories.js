@@ -38,7 +38,7 @@ exports.getStoriesById = function (req, res) {
 };
 
 exports.createNew = function (req, res) {
-    const newStory = req.body;
+    const newStory = req.query.date ? req.query : req.body;
     const user = req.user;
     const story = new Story({
         user_id: user.local.user_id,
