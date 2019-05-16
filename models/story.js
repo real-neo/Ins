@@ -8,4 +8,12 @@ const StorySchema = mongoose.Schema({
     location: {type: Array}
 });
 
+// StorySchema.plugin(textSearch);
+StorySchema.index({text: 'text'});
+// StorySchema.path('text').index({text: true});
+// StorySchema.indexes({
+//     user_id: 'text',
+//     text: 'text',
+// });
+
 module.exports = mongoose.model('Story', StorySchema);

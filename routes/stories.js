@@ -1,8 +1,7 @@
 const router = require('express').Router();
+const story = require('../controllers/stories');
 
 module.exports = function(passport) {
-    const story = require('../controllers/stories');
-
     router.get('/', isLoggedIn, story.index);
 
     router.get('/new', story.new);
@@ -10,6 +9,8 @@ module.exports = function(passport) {
     router.post('/new', story.createNew);
 
     router.post('/get_stories_by_id', story.getStoriesById);
+
+    router.post('/search', story.searchMongo);
 
     return router;
 };

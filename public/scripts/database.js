@@ -79,6 +79,25 @@ function getCachedDataFromLocalStorage(user_id) {
 }
 
 function searchByKeyword(keyword) {
+    $.ajax({
+        url: '/stories/search', //TODO
+        contentType: 'application/json',
+        type: 'POST',
+        data: JSON.stringify({keyword: keyword}),
+        success: function (dataR) {
+            cleanStories();
+            hideOfflineWarning();
+            showStories(dataR)
+        },
+        // the request to the server has failed. Let's show the cached data
+        error: function (xhr, status, error) {
+            showOfflineWarning();
+            cleanStories();
+            // offlineSearch(keyword);
+        }
+    });
+}
+function offlineSearch(keyword) {
     if (dbPromise) {
         dbPromise.then(function (db) {
             console.log('searching: ' + keyword);
