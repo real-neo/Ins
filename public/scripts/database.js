@@ -74,8 +74,7 @@ function getCachedDataFromLocalStorage(user_id) {
     if (stories == null)
         showStory({user_id: 'Ins', text: 'You don\'t have any stories!'});
     else {
-        for (let story of stories)
-            showStory(story);
+        showStories(stories);
     }
 }
 

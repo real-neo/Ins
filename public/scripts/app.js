@@ -41,10 +41,7 @@ function loadStoriesById(user_id) {
         data: user,
         success: function (dataR) {
             cleanStories();
-            if (dataR && dataR.length > 0) {
-                for (let story of dataR)
-                    showStory(story);
-            }
+            showStories(dataR);
             storeCachedData(user_id, dataR);
             hideOfflineWarning();
         },
@@ -69,18 +66,25 @@ function cleanStories() {
 /**
  * given the stories returned by the server,
  * it adds some rows of stories to the stories div
- * @param dataR the data returned by the server
+ * @param stories the data returned by the server
  */
-function showStory(dataR) {
+function showStories(stories) {
+    if (stories && stories.length > 0) {
+        for (let story of stories)
+            showStory(story);
+    }
+}
+
+function showStory(story) {
     if (document.getElementById('stories') != null) {
         $.ajax({
-            url: '/users/get_name_by_id/' + dataR.user_id,
+            url: '/users/get_name_by_id/' + story.user_id,
             type: 'get',
             success: function (R) {
-                showStoryWithName(dataR, R);
+                showStoryWithName(story, R);
             },
             error: function (xhr, status, error) {
-                showStoryWithName(dataR, '');
+                showStoryWithName(story, '');
                 showOfflineWarning();
             }
         });
