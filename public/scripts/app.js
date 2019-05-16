@@ -19,9 +19,32 @@ function initIns() {
     } else {
         console.log('This browser doesn\'t support IndexedDB');
     }
+
+    getMyId();
 }
 
-function loadData() {
+function getMyId() {
+    $.ajax({
+        url: '/users/get_my_id',
+        contentType: 'application/json',
+        type: 'get',
+        data: '',
+        success: function (dataR) {
+            console.log(dataR);
+            console.log(dataR.logged);
+            if (dataR.logged) {
+                delete dataR['logged'];
+                localStorage.setItem('user', JSON.stringify(dataR));
+            }
+        },
+        // the request to the server has failed. Let's show the cached data
+        error: function (xhr, status, error) {
+            showOfflineWarning();
+        }
+    });
+}
+
+function loadMyStories() {
     let user = JSON.parse(localStorage.getItem('user'));
     if (user !== null)
         loadStoriesById(user.user_id);
@@ -33,11 +56,11 @@ function loadData() {
  * @param user_id
  */
 function loadStoriesById(user_id) {
-    const user = JSON.stringify({user_id: user_id});
+    const user = {user_id: user_id};
     $.ajax({
-        url: '/stories/get_stories_by_id', //TODO
-        contentType: 'application/json',
-        type: 'POST',
+        url: '/stories/get_stories_by_id',
+        dataType: 'json',
+        type: 'get',
         data: user,
         success: function (dataR) {
             cleanStories();
@@ -80,8 +103,8 @@ function showStory(story) {
         $.ajax({
             url: '/users/get_name_by_id/' + story.user_id,
             type: 'get',
-            success: function (R) {
-                showStoryWithName(story, R);
+            success: function (name) {
+                showStoryWithName(story, name);
             },
             error: function (xhr, status, error) {
                 showStoryWithName(story, '');
@@ -127,38 +150,6 @@ function showStoryWithName(dataR, name) {
     }
 }
 
-function login() {
-    const email = document.getElementById('inputEmail').value;
-    const password = document.getElementById('inputPassword').value;
-
-    storeUser('neo');
-
-    window.location = '/';
-
-    event.preventDefault();
-}
-
-/**
- * store user id and name into local storage
- * @param user_id user ID
- */
-function storeUser(user_id) { //TODO should be called after log in
-    const user = JSON.stringify({user_id: user_id});
-    $.ajax({
-        url: '/users/get_name_by_id',
-        contentType: 'application/json',
-        type: 'POST',
-        data: user,
-        success: function (dataR) { // {user_id: 'neo', name: 'Neo'}
-            localStorage.setItem('user', JSON.stringify(dataR));
-        },
-        // the request to the server has failed. Let's show the cached data
-        error: function (xhr, status, error) {
-            showOfflineWarning();
-        }
-    });
-}
-
 function search() {
     let keyword = document.getElementById('searchBox').value;
     if (keyword !== '') {
@@ -184,7 +175,6 @@ window.addEventListener('online', function (e) {
     // Resync data with server.
     console.log("You are online");
     hideOfflineWarning();
-    loadData();
 }, false);
 
 function showOfflineWarning() {

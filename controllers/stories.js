@@ -9,15 +9,15 @@ exports.new = function (req, res) {
 };
 
 exports.getStoriesById = function (req, res) {
-    const userData = req.body;
-    if (userData == null) {
+    const user_id = req.body.user_id || req.query.user_id;
+    if (user_id == null) {
         res.status(403).send('No data sent!')
     }
-    console.log('Querying POST get_stories_by_id: ' + userData.user_id);
+    console.log('Querying POST get_stories_by_id: ' + user_id);
 
     let stories = [];
 
-    Story.find({'user_id': userData.user_id}).cursor().eachAsync(mongoStory => {
+    Story.find({'user_id': user_id}).cursor().eachAsync(mongoStory => {
         console.log(mongoStory);
         let newStory = {
             id: mongoStory._id,
@@ -39,8 +39,9 @@ exports.getStoriesById = function (req, res) {
 
 exports.createNew = function (req, res) {
     const newStory = req.body;
+    const user = req.user;
     const story = new Story({
-        user_id: newStory.user_id,
+        user_id: user.local.user_id,
         date: newStory.date,
         text: newStory.text,
         pictures: newStory.pictures,

@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const dataCacheName = 'insData-v1';
-const cacheName = 'insPWA-v1';
+const cacheName = 'ins-dynamic';
 const filesToCache = [
     '/',
     '/favicon.ico',
     '/images/icons/icon-256x256.png',
+    '/images/default-avatar.png',
     '/scripts/app.js',
     '/scripts/bootstrap.bundle.min.js',
     '/scripts/bootstrap.bundle.min.js.map',
@@ -70,7 +70,7 @@ self.addEventListener('activate', function (e) {
     e.waitUntil(
         caches.keys().then(function (keyList) {
             return Promise.all(keyList.map(function (key) {
-                if (key !== cacheName && key !== dataCacheName) {
+                if (key !== cacheName) {
                     console.log('[ServiceWorker] Removing old cache', key);
                     return caches.delete(key);
                 }
@@ -83,20 +83,61 @@ self.addEventListener('activate', function (e) {
 self.addEventListener('fetch', function (event) {
     console.log('[Service Worker] Fetch', event.request.url);
     const dataUrl = '/stories/get_stories_by_id';
-    if (event.request.url.indexOf('/login') > -1 || event.request.url.indexOf('/register') > -1) {
+    const avatarUrl = '/images/avatars';
+    if (event.request.url.indexOf('/login') > -1 ||
+        event.request.url.indexOf('/register') > -1 ||
+        event.request.url.indexOf('/stories/create_new') > -1) {
+        console.log('::::::::::::::::::0 - responding');
         return false;
     } else if (event.request.url.indexOf(dataUrl) > -1) {
-        return fetch(event.request).then(function (response) {
-            // note: if the network is down, response will contain the error
-            // that will be passed to Ajax
-            return response;
-        }).catch(function (e) {
-            console.log("service worker error 1: " + e.message);
-        })
-    } else {
+        // Network falling back to cache
+        console.log('::::::::::::::::::1 - starting');
         event.respondWith(async function () {
+            console.log('::::::::::::::::::1 - responding');
+            try {
+                const cache = await caches.open('ins-dynamic');
+                const networkResponsePromise = fetch(event.request);
+                event.waitUntil(async function () {
+                    const networkResponse = await networkResponsePromise;
+                    await cache.put(event.request, networkResponse.clone());
+                }());
+                console.log('::::::::::::::::::1 - network');
+                return networkResponsePromise;
+            } catch (e) {
+                console.log('::::::::::::::::::1 - Error, cache');
+                return caches.match(event.request);
+            }
+        }());
+    } else if (event.request.url.indexOf(avatarUrl) > -1) {
+        // Generic fallback + save cache
+        console.log('::::::::::::::::::2 - starting');
+        event.respondWith(async function () {
+            console.log('::::::::::::::::::2 - responding');
+            const cachedResponse = await caches.match(event.request);
+
+            if (cachedResponse) return cachedResponse;
+
+            try {
+                const cache = await caches.open('ins-dynamic');
+                const networkResponsePromise = fetch(event.request);
+                event.waitUntil(async function () {
+                    const networkResponse = await networkResponsePromise;
+                    await cache.put(event.request, networkResponse.clone());
+                }());
+                console.log('::::::::::::::::::2 - network');
+                return networkResponsePromise;
+            } catch (e) {
+                console.log('::::::::::::::::::2 - Error, cache');
+                return caches.match('/images/default-avatar.png');
+            }
+        }());
+    } else {
+        // On network response
+        event.respondWith(async function () {
+            console.log('::::::::::::::::::3 - responding');
             const cache = await caches.open('ins-dynamic');
-            const cachedResponse = await cache.match(event.request);
+            const cachedResponse = await caches.match(event.request);
+            if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') return;
             const networkResponsePromise = fetch(event.request);
 
             event.waitUntil(async function () {
