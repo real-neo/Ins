@@ -40,9 +40,12 @@ function loadStoriesById(user_id) {
         type: 'POST',
         data: user,
         success: function (dataR) {
-            storeCachedData(user_id, dataR);
             cleanStories();
-            getCachedData(user_id);
+            if (dataR && dataR.length > 0) {
+                for (let story of dataR)
+                    showStory(story);
+            }
+            storeCachedData(user_id, dataR);
             hideOfflineWarning();
         },
         // the request to the server has failed. Let's show the cached data
