@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const story = require('../controllers/stories');
-const isLoggedIn = require('../config/isLoggedIn');
+const isLoggedIn = require('../util/isLoggedIn');
 
 module.exports = function(passport) {
     router.all('/', isLoggedIn, story.index);

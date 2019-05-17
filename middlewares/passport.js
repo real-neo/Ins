@@ -1,4 +1,4 @@
-const LocalStrategy = require('passport-local').Strategy;
+const LocalStrategy = require('passport-local/lib').Strategy;
 const User = require('../models/user');
 
 module.exports = function (passport) {

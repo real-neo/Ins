@@ -8,7 +8,7 @@ const session = require('express-session');
 const passport = require('passport');
 // const flash = require('connect-flash');
 
-require('./config/passport')(passport);
+require('./middlewares/passport')(passport);
 
 const app = express();
 
