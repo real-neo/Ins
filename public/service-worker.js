@@ -82,7 +82,6 @@ self.addEventListener('activate', function (e) {
 
 self.addEventListener('fetch', function (event) {
     console.log('[Service Worker] Fetch', event.request.url);
-    const storyUrl = '/stories';
     const avatarUrl = '/images/avatars';
     if (event.request.url.indexOf('/login') > -1 ||
         event.request.url.indexOf('/register') > -1 ||
@@ -90,28 +89,11 @@ self.addEventListener('fetch', function (event) {
         // Ignore these urls
         console.log('::::::::::::::::::0 - starting');
         return false;
-    } else if (event.request.url.indexOf(storyUrl) > -1) {
-        // Network falling back to cache
+    } else if (event.request.url.indexOf(avatarUrl) > -1) {
+        // Generic fallback + save cache
         console.log('::::::::::::::::::1 - starting');
         event.respondWith(async function () {
             console.log('::::::::::::::::::1 - responding');
-            try {
-                const cache = await caches.open('ins-dynamic');
-                const networkResponsePromise = fetch(event.request);
-                const networkResponse = await networkResponsePromise;
-                await cache.put(event.request, networkResponse.clone());
-                console.log('::::::::::::::::::1 - network');
-                return networkResponsePromise;
-            } catch (e) {
-                console.log('::::::::::::::::::1 - Error, cache');
-                return caches.match(event.request);
-            }
-        }());
-    } else if (event.request.url.indexOf(avatarUrl) > -1) {
-        // Generic fallback + save cache
-        console.log('::::::::::::::::::2 - starting');
-        event.respondWith(async function () {
-            console.log('::::::::::::::::::2 - responding');
             const cachedResponse = await caches.match(event.request);
 
             if (cachedResponse) return cachedResponse;
@@ -121,29 +103,29 @@ self.addEventListener('fetch', function (event) {
                 const networkResponsePromise = fetch(event.request);
                 const networkResponse = await networkResponsePromise;
                 await cache.put(event.request, networkResponse.clone());
-                console.log('::::::::::::::::::2 - network');
+                console.log('::::::::::::::::::1 - network');
                 return networkResponsePromise;
             } catch (e) {
-                console.log('::::::::::::::::::2 - Error, cache');
+                console.log('::::::::::::::::::1 - Error, cache');
                 return caches.match('/images/default-avatar.png');
             }
         }());
     } else {
-        // On network response
+        // Network falling back to cache
+        console.log('::::::::::::::::::2 - starting');
         event.respondWith(async function () {
-            console.log('::::::::::::::::::3 - responding');
-            const cache = await caches.open('ins-dynamic');
-            const cachedResponse = await caches.match(event.request);
-            if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') return;
-            const networkResponsePromise = fetch(event.request);
-
-            event.waitUntil(async function () {
+            console.log('::::::::::::::::::2 - responding');
+            try {
+                const cache = await caches.open('ins-dynamic');
+                const networkResponsePromise = fetch(event.request);
                 const networkResponse = await networkResponsePromise;
                 await cache.put(event.request, networkResponse.clone());
-            }());
-
-            // Returned the cached response if we have one, otherwise return the network response.
-            return cachedResponse || networkResponsePromise;
+                console.log('::::::::::::::::::2 - network');
+                return networkResponsePromise;
+            } catch (e) {
+                console.log('::::::::::::::::::2 - Error, cache');
+                return caches.match(event.request);
+            }
         }());
     }
 });

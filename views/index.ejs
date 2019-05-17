@@ -15,16 +15,21 @@
 <div class="container">
     <div class="row">
         <div class="col text-right">
-            <a class="btn btn-primary btn-lg" href="/login" role="button">
-                <i class="fas fa-sign-in-alt"></i>
-            </a>
             <a class="btn btn-primary btn-lg" href="/stories/new" role="button">
                 <i class="fas fa-edit"></i>
             </a>
+            <% if (login) { %>
+                <a class="btn btn-primary btn-lg" href="/logout" role="button" title="Log Out">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            <% } else { %>
+                <a class="btn btn-primary btn-lg" href="/login" role="button" title="Log In">
+                    <i class="fas fa-sign-in-alt"></i>
+                </a>
+            <% } %>
         </div>
     </div>
 
-    <!--最近更新的短文-->
     <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded shadow-sm">
         <img class="mr-3"
              src="https://www.saydaily.com/.image/t_share/MTM0ODg3OTkwOTMyNTc1NTA2/screen-shot-2015-12-03-at-22820-pmpng.png"

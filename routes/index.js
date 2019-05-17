@@ -6,6 +6,7 @@ const path = require('path');
 module.exports = function (passport) {
     /* GET home page. */
     router.all('/', function (req, res, next) {
+        res.locals.login = req.isAuthenticated();
         res.render('index');
     });
 

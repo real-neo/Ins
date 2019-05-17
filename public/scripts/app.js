@@ -31,7 +31,6 @@ function getMyId() {
         data: '',
         success: function (dataR) {
             console.log(dataR);
-            console.log(dataR.logged);
             if (dataR.logged) {
                 delete dataR['logged'];
                 localStorage.setItem('user', JSON.stringify(dataR));
