@@ -19,6 +19,7 @@ exports.init = function () {
 
     const story = new Story({
         user: user,
+        user_id: 'real-neo',
         date: '1553803899301',
         content: 'initContent',
         event: event

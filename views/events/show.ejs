@@ -3,7 +3,7 @@
 <head>
     <% include ../layout/head.ejs %>
 </head>
-<body onload="initIns();">
+<body onload="initIns();loadComments('<%- e._id %>');">
 <header>
     <% include ../layout/header.ejs %>
 </header>
@@ -45,15 +45,15 @@
         <h3>Comments</h3>
     </div>
 
-    <div class="form-group mt-3">
+    <form class="form-group mt-3">
         <label for="new_comment">Create Comment</label>
         <textarea name="content" class="form-control mb-3" rows="5" cols="20" id="new_comment"
                   placeholder="Share your thought"></textarea>
-        <button type="submit" class="btn btn-primary">Post</button>
-    </div>
+        <input type="hidden" name="event" id="event_id" value="<%- e._id %>">
+        <button type="submit" class="btn btn-primary" onclick="postNewComment()">Post</button>
+    </form>
 
-    <div class="media my-3 p-3 bg-white rounded shadow-lg row">
-
+    <div id="stories_comments">
     </div>
 
 </div>

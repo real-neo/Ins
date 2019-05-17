@@ -63,7 +63,7 @@ function getCachedDataOffline(next) {
                 console.log('get offline stories');
                 next(stories);
                 // for (let story of stories)
-                //     showStory(story);
+                //     showStoryOrComment(story);
             } else {
                 return JSON.parse(localStorage.getItem(user_id_new));
             }
@@ -89,7 +89,7 @@ function showOfflineData() {
                 // JSON.parse(stories);
                 for (let story of stories) {
                     story.user_id = user_id_new;
-                    showStory(story);
+                    showStoryOrComment(story);
                 }
             }
         });
@@ -132,7 +132,7 @@ function getCachedData(user_id) {
         }).then(function (stories) {
             if (stories && stories.length > 0) {
                 for (let story of stories)
-                    showStory(story);
+                    showStoryOrComment(story);
             } else {
                 getCachedDataFromLocalStorage(user_id);
             }
@@ -149,9 +149,9 @@ function getCachedData(user_id) {
 function getCachedDataFromLocalStorage(user_id) {
     const stories = JSON.parse(localStorage.getItem(user_id));
     if (stories == null)
-        showStory({user_id: 'Ins', text: 'You don\'t have any stories!'});
+        showStoryOrComment({user_id: 'Ins', text: 'You don\'t have any stories!'});
     else {
-        showStories(stories);
+        showStoriesOrComments(stories);
     }
 }
 
@@ -164,7 +164,7 @@ function searchByKeyword(keyword) {
         success: function (dataR) {
             cleanStoriesEvents();
             hideOfflineWarning();
-            showStories(dataR)
+            showStoriesOrComments(dataR)
         },
         // the request to the server has failed. Let's show the cached data
         error: function (xhr, status, error) {
@@ -188,7 +188,7 @@ function offlineSearch(keyword) {
                     for (let story of stories) {
                         console.log(story);
                         if (story.text.toLowerCase().search(keyword.toLowerCase()) > -1)
-                            showStory(story);
+                            showStoryOrComment(story);
                     }
                 });
         });
@@ -196,11 +196,11 @@ function offlineSearch(keyword) {
         const user = JSON.parse(localStorage.getItem('user'));
         const stories = JSON.parse(localStorage.getItem(user.user_id));
         if (stories == null)
-            showStory({user_id: 'Ins', text: 'You don\'t have any stories!'});
+            showStoryOrComment({user_id: 'Ins', text: 'You don\'t have any stories!'});
         else {
             for (let story of stories) {
                 if (story.text.toLowerCase().search(keyword.toLowerCase()) > -1)
-                    showStory(story);
+                    showStoryOrComment(story);
             }
         }
     }
@@ -221,11 +221,15 @@ function showContent(dataR) {
 }
 
 function showPictures(dataR) {
-    if (dataR.pictures.length > 0) {
-        console.log(dataR.pictures[0]);
-        return dataR.pictures[0];
-    } else
-        return null;
+    let pictures = '';
+    if (dataR.pictures == null && dataR.content === undefined) {
+    } else {
+        console.log(dataR.pictures);
+        for (let pic of dataR.pictures) {
+            pictures += ('<img src="' + pic + '" alt=""><br>');
+        }
+    }
+    return pictures;
 }
 
 function showLocation(dataR) {

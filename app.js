@@ -46,11 +46,13 @@ const index = require('./routes/index');
 const users = require('./routes/users');
 const stories = require('./routes/stories');
 const events = require('./routes/events');
+const comments = require('./routes/comments');
 
 app.use('/', index);
 app.use('/users', users);
 app.use('/stories', stories);
 app.use('/events', events);
+app.use('/comments', comments);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

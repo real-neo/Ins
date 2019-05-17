@@ -16,7 +16,7 @@ exports.new = async (req, res) => {
 exports.getStoriesById = async (req, res) => {
     const user_id = req.body.user_id || req.query.user_id;
     if (user_id == null) {
-        res.status(403).send('No data sent!')
+        return res.status(403).send('No data sent!')
     }
     console.log('Querying get_stories_by_id: ' + user_id);
 
