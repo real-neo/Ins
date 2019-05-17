@@ -1,7 +1,9 @@
 let dbPromise;
+let dbPromiseNew;
 
 const INS_DB_NAME = 'ins_db_1';
 const INS_STORE_NAME = 'ins_store';
+const INS_STORE_NEW = 'ins_store_new';
 
 /**
  * it inits the database
@@ -12,6 +14,13 @@ function initDatabase() {
             const storyDB = upgradeDb.createObjectStore(INS_STORE_NAME, {keyPath: 'id', autoIncrement: true});
             storyDB.createIndex('id', 'id', {unique: true});
             storyDB.createIndex('user_id', 'user_id');
+        }
+    });
+    dbPromiseNew = idb.openDb(INS_STORE_NEW, 1, function (upgradeDb) {
+        if (!upgradeDb.objectStoreNames.contains(INS_STORE_NEW)) {
+            const storyDB_new = upgradeDb.createObjectStore(INS_STORE_NEW, {keyPath: 'id', autoIncrement: true});
+            storyDB_new.createIndex('id', 'id', {unique: true});
+            storyDB_new.createIndex('user_id', 'user_id');
         }
     });
 }
@@ -38,6 +47,72 @@ function storeCachedData(user_id, stories) {
         });
     } else
         localStorage.setItem(user_id, JSON.stringify(stories));
+}
+
+function getCachedDataOffline(next) {
+    let user_id_new = JSON.parse(localStorage.getItem('user')).user_id;
+    if (dbPromiseNew) {
+        dbPromiseNew.then(function (db) {
+            console.log('fetching: ' + user_id_new);
+            const tx = db.transaction(INS_STORE_NEW, 'readonly');
+            const store = tx.objectStore(INS_STORE_NEW);
+            const index = store.index('id');
+            return index.getAll();
+        }).then(function (stories) {
+            if (stories && stories.length > 0) {
+                console.log('get offline stories');
+                next(stories);
+                // for (let story of stories)
+                //     showStory(story);
+            } else {
+                return JSON.parse(localStorage.getItem(user_id_new));
+            }
+        });
+    } else {
+        return JSON.parse(localStorage.getItem(user_id_new));
+    }
+}
+
+function showOfflineData() {
+    let user_id_new = JSON.parse(localStorage.getItem('user')).user_id;
+    if (dbPromiseNew) {
+        dbPromiseNew.then(function (db) {
+            console.log('fetching: ' + user_id_new);
+            const tx = db.transaction(INS_STORE_NEW, 'readonly');
+            const store = tx.objectStore(INS_STORE_NEW);
+            const index = store.index('id');
+            return index.getAll();
+        }).then(function (stories) {
+            if (stories && stories.length > 0) {
+                // console.log('get offline stories');
+                // next(stories);
+                // JSON.parse(stories);
+                for (let story of stories){
+                    story.user_id=user_id_new;
+                    showStory(story);
+            }}
+        });
+}}
+
+/**
+ * it offline saves the stories for a user in indexedDB or localStorage
+ * @param story
+ */
+function storeCachedDataNew(story) {
+    let user_id_new = JSON.parse(localStorage.getItem('user')).user_id;
+    if (dbPromiseNew) {
+        dbPromiseNew.then(async db => {
+            const tx = db.transaction(INS_STORE_NEW, 'readwrite');
+            const storyDB_new = tx.objectStore(INS_STORE_NEW);
+            await storyDB_new.put(story);
+            return tx.complete;
+        }).catch(function (error) {
+            alert('IndexedDb error, store story in local storage');
+            localStorage.setItem(user_id_new, JSON.stringify(story));
+        });
+    } else {
+        localStorage.setItem(user_id_new, JSON.stringify(story));
+    }
 }
 
 /**

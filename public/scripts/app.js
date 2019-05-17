@@ -66,6 +66,7 @@ function loadStoriesById(user_id) {
         success: function (dataR) {
             cleanStories();
             showStories(dataR);
+            showOfflineData();
             storeCachedData(user_id, dataR);
             hideOfflineWarning();
         },
@@ -159,6 +160,32 @@ function search() {
     event.preventDefault();
 }
 
+function postNews(stories) {
+    for (let story of stories)
+        postNew(story);
+    indexedDB.deleteDatabase(INS_STORE_NEW);
+}
+
+function postNew(story) {
+    console.log(story);
+    delete story['id'];
+    console.log('Sending new story - 2');
+    console.log(story);
+    $.ajax({
+        url: '/stories/create_new',
+        contentType: 'application/json',
+        type: 'post',
+        data: JSON.stringify(story),
+        success: function (dataR) {
+            console.log(dataR);
+        },
+        // the request to the server has failed. Let's show the cached data
+        error: function (xhr, status, error) {
+            console.log('send fail');
+        }
+    });
+}
+
 /**
  * When the client gets off-line, it shows an off line warning to the user
  * so that it is clear that the data is stale
@@ -176,6 +203,8 @@ window.addEventListener('online', function (e) {
     // Resync data with server.
     console.log("You are online");
     hideOfflineWarning();
+    getCachedDataOffline(postNews);
+    // getCachedDataOffline();
 }, false);
 
 function showOfflineWarning() {

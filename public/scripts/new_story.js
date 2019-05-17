@@ -100,6 +100,8 @@ function postNewStory() {
         location: location
     };
 
+    console.log('Sending new story - 1');
+    console.log(newStory);
     $.ajax({
         contentType: "application/json",
         url: '/stories/create_new',
@@ -108,13 +110,14 @@ function postNewStory() {
         success: function (data) {
             alert(data);
         }, error: function (err) {
-            alert('Error: ' + err.status + ':' + err.statusText);
+            // alert('Error: ' + err.status + ':' + err.statusText);
+            storeCachedDataNew(newStory)
         }
     });
 
     //TODO 1.save into another db 2.send to server 3.redirect to stories page
     // storeCachedData(user.user_id, [newStory]);
-    alert('Successfully!' + newStory.date);
+    alert('Successfully!' + newStory.location);
     window.location = '/stories';
 }
 

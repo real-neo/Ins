@@ -1,5 +1,5 @@
 const Story = require('../models/story');
-
+// const textSearch = require('mongoose-text-search');
 exports.index = function (req, res) {
     res.render('stories/index');
 };
@@ -25,10 +25,10 @@ exports.getStoriesById = function (req, res) {
             date: mongoStory.date,
             text: mongoStory.text,
             pictures: mongoStory.pictures,
-            location: {
+            location: mongoStory.location ? {
                 latitude: mongoStory.location[0],
                 longitude: mongoStory.location[1]
-            }
+            } : null
         };
         stories.push(newStory);
     }).then(function () {
@@ -40,12 +40,13 @@ exports.getStoriesById = function (req, res) {
 exports.createNew = function (req, res) {
     const newStory = req.query.date ? req.query : req.body;
     const user = req.user;
+    const t = newStory.pictures;
     const story = new Story({
         user_id: user.local.user_id,
         date: newStory.date,
         text: newStory.text,
         pictures: newStory.pictures,
-        location: [newStory.location.latitude, newStory.location.longitude]
+        location: newStory.location ? [newStory.location.latitude, newStory.location.longitude] : null
     });
     story.save(function (err, results) {
         console.log('newStory:::::::::::::::::::::::' + newStory);
@@ -59,32 +60,21 @@ exports.searchMongo = function (req, res) {
     const keyword = req.body.keyword;
     console.log(':::::::::::::::::::::::'+keyword.type + keyword);
     let stories = [];
-    Story.find({$text:{$search:keyword},}).exec(function (err, results) {
-        if (err) return handleError(err);
-        console.log(':::::::::::::::::::::::' + results.type + results);
-        stories.push(results);
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify(stories));
-        // for (let i = 0; i < results.length; ++i) {
-        //     console.log(results[i]);
-        //     stories.push(results[i]);
-        // }
-    });
+    // Story.find({$text:{$search:keyword},}).exec(function (err, results) {
+    //     if (err) return handleError(err);
+    //     console.log(':::::::::::::::::::::::' + results.type + results);
+    //     stories.push(results);
+    //     res.setHeader('Content-Type', 'application/json');
+    //     res.send(JSON.stringify(stories));
+    //     // for (let i = 0; i < results.length; ++i) {
+    //     //     console.log(results[i]);
+    //     //     stories.push(results[i]);
+    //     // }
+    // });
 
-    Story.find({'user_id': userData.user_id}).cursor().eachAsync(mongoStory => {
+    Story.find({'text': keyword}).cursor().eachAsync(mongoStory => {
         console.log(mongoStory);
-        let newStory = {
-            id: mongoStory._id,
-            user_id: mongoStory.user_id,
-            date: mongoStory.date,
-            text: mongoStory.text,
-            pictures: mongoStory.pictures,
-            location: {
-                latitude: mongoStory.location[0],
-                longitude: mongoStory.location[1]
-            }
-        };
-        stories.push(newStory);
+        stories.push(mongoStory);
     }).then(function () {
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(stories));

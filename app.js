@@ -7,10 +7,12 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const passport = require('passport');
 // const flash = require('connect-flash');
+const morgan = require('morgan');
 
 require('./middlewares/passport')(passport);
 
 const app = express();
+app.use(morgan('combined'));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
