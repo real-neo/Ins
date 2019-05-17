@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 
 const StorySchema = mongoose.Schema({
     user: {type: mongoose.Schema.ObjectId, ref: 'User', required: true},
