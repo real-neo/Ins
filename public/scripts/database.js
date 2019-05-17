@@ -157,7 +157,7 @@ function getCachedDataFromLocalStorage(user_id) {
 
 function searchByKeyword(keyword) {
     $.ajax({
-        url: '/stories/search', //TODO
+        url: '/stories/searchMongo', //TODO
         contentType: 'application/json',
         type: 'POST',
         data: JSON.stringify({keyword: keyword}),
@@ -170,7 +170,7 @@ function searchByKeyword(keyword) {
         error: function (xhr, status, error) {
             showOfflineWarning();
             cleanStoriesEvents();
-            // offlineSearch(keyword);
+            offlineSearch(keyword);
         }
     });
 }
@@ -187,7 +187,7 @@ function offlineSearch(keyword) {
                     cleanStoriesEvents();
                     for (let story of stories) {
                         console.log(story);
-                        if (story.text.toLowerCase().search(keyword.toLowerCase()) > -1)
+                        if (story.content.toLowerCase().search(keyword.toLowerCase()) > -1)
                             showStory(story);
                     }
                 });
@@ -196,10 +196,10 @@ function offlineSearch(keyword) {
         const user = JSON.parse(localStorage.getItem('user'));
         const stories = JSON.parse(localStorage.getItem(user.user_id));
         if (stories == null)
-            showStory({user_id: 'Ins', text: 'You don\'t have any stories!'});
+            showStory({user_id: 'Ins', content: 'You don\'t have any stories!'});
         else {
             for (let story of stories) {
-                if (story.text.toLowerCase().search(keyword.toLowerCase()) > -1)
+                if (story.content.toLowerCase().search(keyword.toLowerCase()) > -1)
                     showStory(story);
             }
         }

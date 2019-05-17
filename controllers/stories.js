@@ -46,11 +46,18 @@ exports.createNew = async (req, res) => {
 
 exports.searchMongo = async (req, res) => {
     const keyword = req.body.keyword;
-    console.log(':::::::::::::::::::::::' + keyword.type + keyword);
-    let stories = [];
+    console.log(':::::::::::::::::::::::' + keyword);
+    const searchResults =  await Story.find({
+        $text:{$search:keyword}}, {
+        score: { $meta: 'textScore' },
+    });
+    console.log(searchResults);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(searchResults));
+};
     // Story.find({$text:{$search:keyword},}).exec(function (err, results) {
     //     if (err) return handleError(err);
-    //     console.log(':::::::::::::::::::::::' + results.type + results);
+    //     console.log('::: ::::::::::::::::::::' + results.type + results);
     //     stories.push(results);
     //     res.setHeader('Content-Type', 'application/json');
     //     res.send(JSON.stringify(stories));
@@ -60,13 +67,13 @@ exports.searchMongo = async (req, res) => {
     //     // }
     // });
 
-    Story.find({'text': keyword}).cursor().eachAsync(mongoStory => {
-        console.log(mongoStory);
-        stories.push(mongoStory);
-    }).then(function () {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify(stories));
-    });
+    // Story.find({'text': keyword}).cursor().eachAsync(mongoStory => {
+    //     console.log(mongoStory);
+    //     stories.push(mongoStory);
+    // }).then(function () {
+    //     res.setHeader('Content-Type', 'application/json');
+    //     res.send(JSON.stringify(stories));
+    // });
 
 
     // then(storys => console.log('cao'+ storys))
@@ -84,4 +91,3 @@ exports.searchMongo = async (req, res) => {
     //     res.send(JSON.stringify(stories));
     // })
 
-};
