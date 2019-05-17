@@ -87,38 +87,69 @@ function postNewStory() {
         alert('Content can not be blank!');
         return;
     }
+    const event_id = document.getElementById('event_select').value;
     const canvas = document.querySelector('canvas');
-    // sendImage(user.user_id, canvas.toDataURL());
-    let location = null;
+    let location = [];
     if (locationCheck.checked === true) {
-        location = {latitude: latitude, longitude: longitude};
+        location = [latitude, longitude];
     }
     const newStory = {
-        date: new Date().getTime(),
-        text: newStoryContent,
-        pictures: hasPic ? canvas.toDataURL() : null,
+        event: event_id,
+        content: newStoryContent,
+        pictures: hasPic ? [canvas.toDataURL()] : [],
         location: location
     };
 
     console.log('Sending new story - 1');
     console.log(newStory);
     $.ajax({
-        contentType: "application/json",
+        contentType: 'application/json',
         url: '/stories/create_new',
         type: 'post',
         data: JSON.stringify(newStory),
         success: function (data) {
             alert(data);
+            alert('Successfully!');
+            window.location = '/stories';
         }, error: function (err) {
             // alert('Error: ' + err.status + ':' + err.statusText);
-            storeCachedDataNew(newStory)
+            storeCachedDataNew(newStory);
         }
     });
+}
 
-    //TODO 1.save into another db 2.send to server 3.redirect to stories page
-    // storeCachedData(user.user_id, [newStory]);
-    alert('Successfully!' + newStory.location);
-    window.location = '/stories';
+function postNewEvent() {
+    const newEventTitle = document.getElementById('new_event_title').value;
+    const newEventContent = document.getElementById('new_event_content').value;
+    if (newEventTitle === '' || newEventContent === '') {
+        alert('Content can not be blank!');
+        return;
+    }
+    const canvas = document.querySelector('canvas');
+    let location = [];
+    if (locationCheck.checked === true) {
+        location = [latitude, longitude]
+    }
+    const newEvent = {
+        title: newEventTitle,
+        content: newEventContent,
+        pictures: hasPic ? [canvas.toDataURL()] : [],
+        location: location
+    };
+
+    $.ajax({
+        contentType: 'application/json',
+        url: '/events/create_new',
+        type: 'post',
+        data: JSON.stringify(newEvent),
+        success: function (data) {
+            alert(data);
+            alert('Successfully!');
+            window.location = '/events';
+        }, error: function (err) {
+            alert('Error: ' + err.status + ':' + err.statusText);
+        }
+    });
 }
 
 function getLocation() {

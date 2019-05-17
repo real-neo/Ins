@@ -1,17 +1,15 @@
 const router = require('express').Router();
-const story = require('../controllers/stories');
-const isLoggedIn = require('../util/isLoggedIn');
+const storyController = require('../controllers/stories');
+const authController = require('../controllers/auth');
 
-module.exports = function(passport) {
-    router.all('/', isLoggedIn, story.index);
+router.all('/', authController.isLoggedIn, storyController.index);
 
-    router.all('/new', isLoggedIn, story.new);
+router.all('/new', authController.isLoggedIn, storyController.new);
 
-    router.all('/create_new', isLoggedIn, story.createNew);
+router.post('/create_new', authController.isLoggedIn, storyController.createNew);
 
-    router.all('/get_stories_by_id', story.getStoriesById);
+router.all('/get_stories_by_id', storyController.getStoriesById);
 
-    router.post('/search', story.searchMongo);
+router.post('/search', storyController.searchMongo);
 
-    return router;
-};
+module.exports = router;

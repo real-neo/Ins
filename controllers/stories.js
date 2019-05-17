@@ -1,64 +1,52 @@
 const Story = require('../models/story');
-// const textSearch = require('mongoose-text-search');
-exports.index = function (req, res) {
+const Event = require('../models/event');
+const User = require('../models/user');
+
+exports.index = async (req, res) => {
+    res.locals.title = 'Stories';
     res.render('stories/index');
 };
 
-exports.new = function (req, res) {
+exports.new = async (req, res) => {
+    res.locals.title = 'New Story';
+    res.locals.events = await Event.find();
     res.render('stories/new');
 };
 
-exports.getStoriesById = function (req, res) {
+exports.getStoriesById = async (req, res) => {
     const user_id = req.body.user_id || req.query.user_id;
     if (user_id == null) {
         res.status(403).send('No data sent!')
     }
-    console.log('Querying POST get_stories_by_id: ' + user_id);
+    console.log('Querying get_stories_by_id: ' + user_id);
 
-    let stories = [];
+    const userWithStories = await User.findOne({'local.user_id': user_id}).populate('stories');
 
-    Story.find({'user_id': user_id}).cursor().eachAsync(mongoStory => {
-        console.log(mongoStory);
-        let newStory = {
-            id: mongoStory._id,
-            user_id: mongoStory.user_id,
-            date: mongoStory.date,
-            text: mongoStory.text,
-            pictures: mongoStory.pictures,
-            location: mongoStory.location ? {
-                latitude: mongoStory.location[0],
-                longitude: mongoStory.location[1]
-            } : null
-        };
-        stories.push(newStory);
-    }).then(function () {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify(stories));
-    });
+    res.setHeader('Content-Type', 'application/json');
+    console.log(JSON.stringify(userWithStories.stories));
+    res.send(JSON.stringify(userWithStories.stories));
 };
 
-exports.createNew = function (req, res) {
-    const newStory = req.query.date ? req.query : req.body;
-    const user = req.user;
-    const t = newStory.pictures;
-    const story = new Story({
-        user_id: user.local.user_id,
-        date: newStory.date,
-        text: newStory.text,
-        pictures: newStory.pictures,
-        location: newStory.location ? [newStory.location.latitude, newStory.location.longitude] : null
-    });
-    story.save(function (err, results) {
-        console.log('newStory:::::::::::::::::::::::' + newStory);
-        console.log('story:::::::::::::::::::::::' + story);
-        console.log('db:::::::::::::::::::::::' + results);
-    });
+exports.createNew = async (req, res) => {
+    req.body.user = req.user._id;
+
+    const newStory = await new Story(req.body);
+    newStory.user_id = req.user.local.user_id;
+    newStory.save();
+
+    const user = await User.findOne({_id: req.user._id});
+    user.stories.push(newStory);
+    user.save();
+
+    const e = await Event.findOne({_id: newStory.event});
+    e.stories.push(newStory);
+    e.save();
     res.send('Nice!');
 };
 
-exports.searchMongo = function (req, res) {
+exports.searchMongo = async (req, res) => {
     const keyword = req.body.keyword;
-    console.log(':::::::::::::::::::::::'+keyword.type + keyword);
+    console.log(':::::::::::::::::::::::' + keyword.type + keyword);
     let stories = [];
     // Story.find({$text:{$search:keyword},}).exec(function (err, results) {
     //     if (err) return handleError(err);
@@ -82,10 +70,10 @@ exports.searchMongo = function (req, res) {
 
 
     // then(storys => console.log('cao'+ storys))
-        // .cursor.eachAsync(searchStory =>{
-        // console.log('search successfully!');
-        // if (searchStory.text.toLowerCase().search(keyword.toLowerCase()) > -1)
-        // stories.push(searchStory);
+    // .cursor.eachAsync(searchStory =>{
+    // console.log('search successfully!');
+    // if (searchStory.text.toLowerCase().search(keyword.toLowerCase()) > -1)
+    // stories.push(searchStory);
 
     // }
     // Story.textSearch(keyword,function (err, output) {

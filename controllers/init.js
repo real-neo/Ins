@@ -1,15 +1,8 @@
+const Event = require('../models/event');
 const Story = require('../models/story');
 const User = require('../models/user');
 
 exports.init = function () {
-    const story = new Story({
-        user_id: 'real-neo',
-        date: '1553803899301',
-        text: 'Init'
-        // pictures:
-    });
-    story.save();
-
     const user = new User({
         local: {
             email: 'questionyugood@gmail.com',
@@ -18,5 +11,24 @@ exports.init = function () {
         }
     });
     user.setPassword('123');
+
+    const event = new Event({
+        title: 'initTitle',
+        content: 'initContent'
+    });
+
+    const story = new Story({
+        user: user,
+        date: '1553803899301',
+        content: 'initContent',
+        event: event
+        // pictures:
+    });
+    story.save();
+
+    user.stories.push(story);
     user.save();
+
+    event.stories.push(story);
+    event.save();
 };

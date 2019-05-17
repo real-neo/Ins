@@ -24,7 +24,7 @@ const filesToCache = [
     '/scripts/database.js',
     '/scripts/idb.js',
     '/scripts/jquery.min.js',
-    '/scripts/new_story.js',
+    '/scripts/new_story_event.js',
     '/styles/all.css',
     '/styles/bootstrap.min.css',
     '/styles/bootstrap.min.css.map',
@@ -85,7 +85,9 @@ self.addEventListener('fetch', function (event) {
     const avatarUrl = '/images/avatars';
     if (event.request.url.indexOf('/login') > -1 ||
         event.request.url.indexOf('/register') > -1 ||
-        event.request.url.indexOf('/stories/create_new') > -1) {
+        event.request.url.indexOf('/stories/create_new') > -1 ||
+        event.request.url.indexOf('/events/create_new') > -1 ||
+        event.request.url.indexOf('/comments/create_new') > -1) {
         // Ignore these urls
         console.log('::::::::::::::::::0 - starting');
         return false;

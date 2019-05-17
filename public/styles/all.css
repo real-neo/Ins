@@ -4327,3 +4327,19 @@ readers do not read off random characters that represent icons */
 .fas {
   font-family: 'Font Awesome 5 Free';
   font-weight: 900; }
+
+
+img{
+  max-width:100%;
+  max-height:100%
+}
+
+canvas{
+  max-width:100%;
+  max-height:100%
+}
+
+video{
+  max-width:100%;
+  max-height:100%
+}

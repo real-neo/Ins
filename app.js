@@ -6,13 +6,11 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const passport = require('passport');
-// const flash = require('connect-flash');
-const morgan = require('morgan');
+const helpers = require('./helpers/helpers');
 
 require('./middlewares/passport')(passport);
 
 const app = express();
-app.use(morgan('combined'));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -33,15 +31,26 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-// app.use(flash());
 
-const index = require('./routes/index')(passport);
-const users = require('./routes/users')(passport);
-const stories = require('./routes/stories')(passport);
+// pass variables to our templates + all requests
+app.use((req, res, next) => {
+    res.locals.h = helpers;
+    res.locals.user = req.user || null;
+    res.locals.currentPath = req.path;
+    res.locals.title = null;
+    res.locals.message = null;
+    next();
+});
+
+const index = require('./routes/index');
+const users = require('./routes/users');
+const stories = require('./routes/stories');
+const events = require('./routes/events');
 
 app.use('/', index);
 app.use('/users', users);
 app.use('/stories', stories);
+app.use('/events', events);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

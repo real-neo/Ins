@@ -1,62 +1,27 @@
 const router = require('express').Router();
 const path = require('path');
+const appController = require('../controllers/app');
+const authController = require('../controllers/auth');
 // const initDB= require('../controllers/init');
 // initDB.init();
 
-module.exports = function (passport) {
-    /* GET home page. */
-    router.all('/', function (req, res, next) {
-        res.locals.login = req.isAuthenticated();
-        res.render('index');
-    });
+router.all('/', appController.indexPage);
 
-    router.get('/register', function (req, res) {
-        res.render('register');
-    });
+router.get('/register', authController.notLoggedIn, authController.getRegister);
 
-    router.post('/register', function (req, res, next) {
-        passport.authenticate('local-reg', function (err, user, info) {
-            if (err)
-                return next(err);
-            if (!user)
-                return res.render('register', info);
-            req.logIn(user, function (err) {
-                if (err)
-                    return next(err);
-                return res.redirect('/');
-            });
-        })(req, res, next);
-    });
+router.post('/register', authController.notLoggedIn, authController.postRegister);
 
-    router.get('/login', function (req, res) {
-        res.render('login');
-    });
+router.get('/login', authController.notLoggedIn, authController.getLogin);
 
-    router.post('/login', function (req, res, next) {
-        passport.authenticate('local-login', function (err, user, info) {
-            if (err)
-                return next(err);
-            if (!user)
-                return res.render('login', info);
-            req.logIn(user, function (err) {
-                if (err)
-                    return next(err);
-                return res.redirect('/');
-            });
-        })(req, res, next);
-    });
+router.post('/login', authController.notLoggedIn, authController.postLogin);
 
-    router.all('/logout', function (req, res) {
-        req.logout();
-        res.redirect('/');
-    });
+router.all('/logout', authController.logout);
 
-    router.all('/images/avatars/:user_id', function (req, res) {
-        //TODO Query avatar file name of user from db
-        const avatarName = 'avatar.png';
-        const file = path.resolve('./public/images/avatars/' + avatarName);
-        res.sendFile(file);
-    });
+router.all('/images/avatars/:user_id', function (req, res) {
+    //TODO MD5 user_id to filename
+    const avatarName = 'avatar.png';
+    const file = path.resolve('./public/images/avatars/' + avatarName);
+    res.sendFile(file);
+});
 
-    return router;
-};
+module.exports = router;

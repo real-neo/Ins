@@ -87,12 +87,14 @@ function showOfflineData() {
                 // console.log('get offline stories');
                 // next(stories);
                 // JSON.parse(stories);
-                for (let story of stories){
-                    story.user_id=user_id_new;
+                for (let story of stories) {
+                    story.user_id = user_id_new;
                     showStory(story);
-            }}
+                }
+            }
         });
-}}
+    }
+}
 
 /**
  * it offline saves the stories for a user in indexedDB or localStorage
@@ -160,18 +162,19 @@ function searchByKeyword(keyword) {
         type: 'POST',
         data: JSON.stringify({keyword: keyword}),
         success: function (dataR) {
-            cleanStories();
+            cleanStoriesEvents();
             hideOfflineWarning();
             showStories(dataR)
         },
         // the request to the server has failed. Let's show the cached data
         error: function (xhr, status, error) {
             showOfflineWarning();
-            cleanStories();
+            cleanStoriesEvents();
             // offlineSearch(keyword);
         }
     });
 }
+
 function offlineSearch(keyword) {
     if (dbPromise) {
         dbPromise.then(function (db) {
@@ -181,7 +184,7 @@ function offlineSearch(keyword) {
                 .getAll()
                 .then(function (stories) {
                     document.getElementById('title').innerText = 'Search result';
-                    cleanStories();
+                    cleanStoriesEvents();
                     for (let story of stories) {
                         console.log(story);
                         if (story.text.toLowerCase().search(keyword.toLowerCase()) > -1)
@@ -210,23 +213,24 @@ function showDate(dataR) {
         return dataR.date;
 }
 
-function showText(dataR) {
-    if (dataR.text == null && dataR.text === undefined)
+function showContent(dataR) {
+    if (dataR.content == null && dataR.content === undefined)
         return '(No content)';
     else
-        return dataR.text;
+        return dataR.content;
 }
 
 function showPictures(dataR) {
-    if (dataR.pictures == null && dataR.pictures === undefined)
-        return null; //TODO Check pictures before show them
-    else
-        return dataR.pictures;
+    if (dataR.pictures.length > 0) {
+        console.log(dataR.pictures[0]);
+        return dataR.pictures[0];
+    } else
+        return null;
 }
 
 function showLocation(dataR) {
-    if (dataR.location == null)
-        return '';
+    if (dataR.location.length === 2)
+        return 'Latitude: ' + dataR.location[0] + ' Longitude: ' + dataR.location[1]; //TODO Use Google Maps to get address from GPS
     else
-        return 'Latitude: ' + dataR.location.latitude + ' Longitude: ' + dataR.location.longitude; //TODO Use Google Maps to get address from GPS
+        return '';
 }

@@ -3,7 +3,7 @@
 <head>
     <% include ../layout/head.ejs %>
 </head>
-<body onload="initIns();loadMyStories()">
+<body onload="initIns();loadEvents()">
 <header>
     <% include ../layout/header.ejs %>
 </header>
@@ -11,11 +11,11 @@
 
     <div class="row">
         <div class="col text-right">
-            <button class="btn btn-primary" onclick="loadMyStories()">
+            <button class="btn btn-primary" onclick="loadEvents()">
                 Refresh
             </button>
-            <a class="btn btn-primary" href="/stories/new" role="button" title="New Story">
-                New Story
+            <a class="btn btn-primary" href="/events/new" role="button" title="New Event">
+                New Event
             </a>
             <a class="btn btn-primary" href="/logout" role="button" title="Log Out">
                 Log out
@@ -25,8 +25,8 @@
 
     <div class="offline_div text-center" id="offline_div" style="display: none">You are offline</div>
 
-    <h3 id="title" class="pb-2 mb-0">Recent stories</h3>
-    <div id="stories">
+    <h3 id="title" class="pb-2 mb-0">Recent events</h3>
+    <div id="events">
     </div>
 
 </div>
@@ -35,3 +35,5 @@
 </footer>
 </body>
 </html>
+
+
