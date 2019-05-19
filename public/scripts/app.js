@@ -114,6 +114,25 @@ function loadEvents() {
     });
 }
 
+function loadAllStories() {
+    console.log('Loading all stories');
+    $.ajax({
+        url: '/stories/get_all_stories',
+        dataType: 'json',
+        type: 'get',
+        data: '',
+        success: function (dataR) {
+            cleanStoriesEvents();
+            showStoriesOrComments(dataR);
+            hideOfflineWarning();
+        },
+        // the request to the server has failed. Let's show the cached data
+        error: function (xhr, status, error) {
+            showOfflineWarning();
+        }
+    });
+}
+
 function loadMyStories() {
     console.log('Loading my stories');
     let user = JSON.parse(localStorage.getItem('user'));
@@ -155,10 +174,8 @@ function loadStoriesById(user_id) {
 
 
 function cleanStoriesEvents() {
-    if (document.getElementById('stories') != null)
-        document.getElementById('stories').innerHTML = '';
-    if (document.getElementById('events') != null)
-        document.getElementById('events').innerHTML = '';
+    if (document.getElementById('stories_comments') != null)
+        document.getElementById('stories_comments').innerHTML = '';
 }
 
 function showEvents(events) {
@@ -191,7 +208,6 @@ function showEvent(dataR) {
 
         let pictures = showPictures(dataR);
 
-        //TODO Need to use JavaScript rather than innerHTML
         event.innerHTML =
             '<div class="col-12">' +
             '<p class="media-body pb-3 mb-0 lh-125 border-bottom-0 border-gray">' +
@@ -253,7 +269,6 @@ function showStoryOrCommentWithName(dataR, name) {
 
         let pictures = showPictures(dataR);
 
-        //TODO Need to use JavaScript rather than innerHTML
         datum.innerHTML =
             '<div class="col-12">' +
             '<img class="mr-2 rounded-circle" src="/images/avatars/' + dataR.user_id + '" width="48" height="48" alt="avatar">' +

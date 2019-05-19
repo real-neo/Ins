@@ -10,6 +10,8 @@ router.post('/create_new', authController.isLoggedIn, storyController.createNew)
 
 router.all('/get_stories_by_id', storyController.getStoriesById);
 
+router.all('/get_all_stories', storyController.getAllStories);
+
 router.post('/searchMongo', storyController.searchMongo);
 
 module.exports = router;

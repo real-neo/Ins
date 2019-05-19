@@ -27,6 +27,16 @@ exports.getStoriesById = async (req, res) => {
     res.send(JSON.stringify(userWithStories.stories));
 };
 
+exports.getAllStories = async (req, res) => {
+    console.log('Querying get_all_stories_by_id');
+
+    const stories = await Story.find().sort({date: -1});
+
+    res.setHeader('Content-Type', 'application/json');
+    console.log(JSON.stringify(stories));
+    res.send(JSON.stringify(stories));
+};
+
 exports.createNew = async (req, res) => {
     req.body.user = req.user._id;
 

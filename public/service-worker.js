@@ -61,7 +61,6 @@ self.addEventListener('install', function (e) {
     );
 });
 
-
 /**
  * activation of service worker: it removes all cashed files if necessary
  */

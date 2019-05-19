@@ -233,8 +233,8 @@ function showPictures(dataR) {
 }
 
 function showLocation(dataR) {
-    if (dataR.location.length === 2)
-        return 'Latitude: ' + dataR.location[0] + ' Longitude: ' + dataR.location[1]; //TODO Use Google Maps to get address from GPS
-    else
+    if (dataR.location.length === 2) {
+        return '<a href="/map/' + dataR.location[0] + '/' + dataR.location[1] + '">Show Location</a>';
+    } else
         return '';
 }

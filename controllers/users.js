@@ -7,7 +7,7 @@ exports.getNameById = async (req, res) => {
     }
     console.log('Querying get_name_by_id: ' + user_id);
     const user = await User.findOne({'local.user_id': user_id});
-    if(!user)
+    if (!user)
         res.status(404).send('Not found');
     else
         res.send({'user_id': user_id, name: user.local.name});
@@ -16,7 +16,7 @@ exports.getNameById = async (req, res) => {
 exports.getNameById2 = async (req, res) => {
     console.log('Querying get_name_by_id: ' + req.params.user_id);
     const user = await User.findOne({'local.user_id': req.params.user_id});
-    if(!user)
+    if (!user)
         res.status(404).send('Not found');
     else
         res.send(user.local.name);
@@ -27,4 +27,19 @@ exports.getMyId = async (req, res) => {
         return res.send({logged: true, user_id: req.user.local.user_id, name: req.user.local.name});
     else
         return res.send({logged: false});
+};
+
+exports.getSetting = async (req, res) => {
+    res.locals.title = 'Setting';
+    res.render('setting');
+};
+
+exports.postSetting = async (req, res) => {
+    const user = await User.findOneAndUpdate(
+        {_id: req.user._id,},
+        req.body,
+        {new: true, runValidators: true}
+    ).exec();
+    req.locals.message = 'Successfully updated';
+    res.render('setting');
 };
